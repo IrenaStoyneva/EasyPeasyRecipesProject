@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>EasyPeasyRecipes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+<header th:replace="fragments/nav::nav"></header>
+
+<main>
+    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Welcome to EasyPeasyRecipes</span></h1>
+    <hr class="hr-3 w-25 bg-dark"/>
+    <p class="text-center">Discover and share the best recipes for every meal and occasion.</p>
+    <div class="container mt-5">
+        <h2 class="text-center">Recent Recipes</h2>
+        <div class="row" th:each="recipe : ${recentRecipes}">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <img th:src="${recipe.imageUrl}" class="card-img-top" alt="Recipe Image">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+                        <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer::footer"></footer>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa4gFvPe4pjR8Uu4o8TB8dTqZ" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

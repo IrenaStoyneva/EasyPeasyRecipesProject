@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Recipes - EasyPeasyRecipes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+<header th:replace="fragments/nav::nav"></header>
+<main class="container mt-5">
+    <h1 class="text-center">All Recipes</h1>
+    <hr class="hr-3 w-25 bg-dark"/>
+    <div class="row">
+        <div class="col-md-12">
+            <ul>
+                <li th:each="recipe : ${recipes}">
+                    <a th:href="@{/recipe/{id}(id=${recipe.id})}" th:text="${recipe.name}">Recipe Name</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+<footer th:replace="fragments/footer::footer"></footer>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa4gFvPe4pjR8Uu4o8TB8dTqZ" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

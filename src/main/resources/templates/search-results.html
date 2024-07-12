@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Search Results</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+<header th:replace="fragments/commons::nav"></header>
+<main>
+    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Search Results</span></h1>
+    <hr class="hr-3 w-25 bg-white"/>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div th:if="${recipes.size() == 0}" class="text-center">
+                    <p>No recipes found.</p>
+                </div>
+                <div th:if="${recipes.size() > 0}" class="row">
+                    <div th:each="recipe : ${recipes}" class="col-md-4 mb-3">
+                        <div class="card">
+                            <img th:src="${recipe.imageUrl}" class="card-img-top" alt="Recipe Image">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+                                <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
+                                <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer th:replace="fragments/commons::footer"></footer>
+</body>
+</html>
