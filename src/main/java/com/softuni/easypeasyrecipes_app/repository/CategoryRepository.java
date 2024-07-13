@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByName(CategoryEnum name);
 
-    Category findById(long id);
+    Optional<Category> findById(long id);
 }

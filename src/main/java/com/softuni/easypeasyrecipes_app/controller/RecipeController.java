@@ -29,8 +29,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class RecipeController {
@@ -116,7 +118,10 @@ public class RecipeController {
             model.addAttribute("ingredientsList", ingredientsArray);
             model.addAttribute("ratingDto", new RatingDto());
             model.addAttribute("commentDto", new CommentDto());
-            model.addAttribute("comments", recipe.getComments());
+            model.addAttribute("comments", recipe.getComments().stream().map(comment -> {
+                comment.setFormattedDate(comment.getCreatedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                return comment;
+            }).collect(Collectors.toList()));
 
 
             Double averageRating = ratingService.calculateAverageRating(id);

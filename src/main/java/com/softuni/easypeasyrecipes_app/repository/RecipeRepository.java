@@ -16,4 +16,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     Optional<Recipe> findById(Long id);
 
+    List<Recipe> findByAddedBy_Id(Long userId);
+
 }

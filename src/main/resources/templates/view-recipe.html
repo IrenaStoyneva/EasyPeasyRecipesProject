@@ -111,7 +111,7 @@
             <h2>Comments</h2>
             <div th:each="comment : ${comments}">
                 <p><strong th:text="${comment.author.username}">Username</strong>: <span th:text="${comment.content}">Comment content</span></p>
-                <p><small th:text="${#dates.format(comment.createdOn, 'yyyy-MM-dd HH:mm:ss')}">Comment date</small></p>
+                <p><small th:text="${comment.formattedDate}">Comment date</small></p>
                 <hr/>
             </div>
         </div>

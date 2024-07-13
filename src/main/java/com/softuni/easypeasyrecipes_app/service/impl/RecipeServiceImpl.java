@@ -11,13 +11,11 @@ import com.softuni.easypeasyrecipes_app.repository.UserRepository;
 import com.softuni.easypeasyrecipes_app.service.RecipeService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -85,6 +83,21 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeRepository.findAll();
     }
 
+    @Override
+    public List<Recipe> findByUserId(Long userId) {
+        return recipeRepository.findByAddedBy_Id(userId);
+    }
+
+
+    @Override
+    public Recipe updateRecipe(Recipe recipe) {
+        return recipeRepository.save(recipe);
+    }
+
+    @Override
+    public void deleteRecipe(Long recipeId) {
+        recipeRepository.deleteById(recipeId);
+    }
 }
 
 

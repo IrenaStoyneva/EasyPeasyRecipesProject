@@ -29,6 +29,17 @@ public class Comment {
     @JoinColumn(name = "recipe_id", nullable = false)
     private Recipe recipe;
 
+    @Transient
+    private String formattedDate;
+
+    public String getFormattedDate() {
+        return formattedDate;
+    }
+
+    public void setFormattedDate(String formattedDate) {
+        this.formattedDate = formattedDate;
+    }
+
     public User getAuthor() {
         return author;
     }
