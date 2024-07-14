@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Statistics</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header th:replace="fragments/nav :: nav"></header>
+<main class="container mt-5">
+  <h1>Statistics</h1>
+  <div>
+    <h2>Total Users</h2>
+    <p th:text="${userCount}"></p>
+  </div>
+  <div>
+    <h2>Total Recipes</h2>
+    <p th:text="${recipeCount}"></p>
+  </div>
+  <div>
+    <h2>Total Comments</h2>
+    <p th:text="${commentCount}"></p>
+  </div>
+  <div>
+    <h2>Top Recipes</h2>
+    <ul>
+      <li th:each="recipe : ${topRecipes}" th:text="${recipe.name}"></li>
+    </ul>
+  </div>
+</main>
+<footer th:replace="fragments/footer :: footer"></footer>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

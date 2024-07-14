@@ -47,6 +47,9 @@ public class Recipe {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdOn;
 
+    @Column(nullable = false)
+    private boolean approved;
+
     public List<Comment> getComments() {
         return comments;
     }
@@ -133,5 +136,19 @@ public class Recipe {
 
     public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+    public double getAverageRating() {
+        return ratings.stream()
+                .mapToDouble(Rating::getValue)
+                .average()
+                .orElse(0.0);
     }
 }

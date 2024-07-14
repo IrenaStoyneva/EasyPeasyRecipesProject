@@ -56,8 +56,16 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(comment);
     }
 
-    @Override
     public List<Comment> findCommentsByRecipeId(Long recipeId) {
-        return List.of();
+        return commentRepository.findByRecipeId(recipeId);
+    }
+
+    public List<Comment> findAllComments() {
+        return commentRepository.findAll();
+    }
+
+    public void deleteComment(Long id) {
+        commentRepository.deleteById(id);
     }
 }
+

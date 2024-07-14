@@ -98,6 +98,13 @@ public class RecipeServiceImpl implements RecipeService {
     public void deleteRecipe(Long recipeId) {
         recipeRepository.deleteById(recipeId);
     }
+
+    public void approveRecipe(Long id) {
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid recipe Id:" + id));
+        recipe.setApproved(true);
+        recipeRepository.save(recipe);
+    }
 }
 
 

@@ -2,6 +2,7 @@ package com.softuni.easypeasyrecipes_app.repository;
 
 import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,4 +19,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     List<Recipe> findByAddedBy_Id(Long userId);
 
+
+    @Query("SELECT r FROM Recipe r ORDER BY (SELECT AVG(rt.value) FROM Rating rt WHERE rt.recipe = r) DESC")
+    List<Recipe> findTopRecipes();
 }

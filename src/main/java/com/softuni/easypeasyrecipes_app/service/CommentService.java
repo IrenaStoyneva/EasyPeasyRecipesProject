@@ -9,4 +9,8 @@ public interface CommentService {
     void addComment(Long recipeId, CommentDto commentDto);
 
     List<Comment> findCommentsByRecipeId(Long recipeId);
+
+    List<Comment> findAllComments();
+
+    void deleteComment(Long id);
 }

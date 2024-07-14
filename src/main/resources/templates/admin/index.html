@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header th:replace="fragments/nav :: nav"></header>
+<main class="container mt-5">
+    <h1>Admin Panel</h1>
+    <ul>
+        <li><a th:href="@{/admin/users}">Manage Users</a></li>
+        <li><a th:href="@{/admin/recipes}">Manage Recipes</a></li>
+        <li><a th:href="@{/admin/comments}">Manage Comments</a></li>
+        <li><a th:href="@{/admin/categories}">Manage Categories</a></li>
+        <li><a th:href="@{/admin/statistics}">View Statistics</a></li>
+    </ul>
+</main>
+<footer th:replace="fragments/footer :: footer"></footer>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
