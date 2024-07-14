@@ -14,7 +14,7 @@
         <div class="form-group">
             <label for="name">Category Name</label>
             <select class="form-control" id="name" th:field="*{name}">
-                <option th:each="categoryEnum : ${T(java.util.Arrays).asList(T(com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum).values())}"
+                <option th:each="categoryEnum : ${categoryEnums}"
                         th:value="${categoryEnum}" th:text="${categoryEnum}">Category Name</option>
             </select>
         </div>

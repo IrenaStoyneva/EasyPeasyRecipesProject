@@ -21,6 +21,6 @@ public class StatisticsController {
         model.addAttribute("recipeCount", statisticsService.getRecipeCount());
         model.addAttribute("commentCount", statisticsService.getCommentCount());
         model.addAttribute("topRecipes", statisticsService.getTopRecipes());
-        return "statistics";
+        return "admin/statistics";
     }
 }

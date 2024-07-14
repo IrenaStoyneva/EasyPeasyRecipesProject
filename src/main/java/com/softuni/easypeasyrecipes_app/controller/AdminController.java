@@ -4,6 +4,7 @@ import com.softuni.easypeasyrecipes_app.model.entity.Category;
 import com.softuni.easypeasyrecipes_app.model.entity.Comment;
 import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
 import com.softuni.easypeasyrecipes_app.model.entity.User;
+import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
 import com.softuni.easypeasyrecipes_app.service.CategoryService;
 import com.softuni.easypeasyrecipes_app.service.CommentService;
 import com.softuni.easypeasyrecipes_app.service.RecipeService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ public class AdminController {
         this.commentService = commentService;
         this.categoryService = categoryService;
     }
+
     @GetMapping
     public String adminHome() {
         return "admin/index";
@@ -90,6 +93,7 @@ public class AdminController {
     @GetMapping("/categories/add")
     public String showAddCategoryForm(Model model) {
         model.addAttribute("category", new Category());
+        model.addAttribute("categoryEnums", Arrays.asList(CategoryEnum.values()));
         return "admin/add-category";
     }
 
