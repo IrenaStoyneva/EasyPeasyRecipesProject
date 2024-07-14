@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/styles.css"/>
 </head>
 <body>
-<header th:replace="fragments/commons::nav"></header>
+<header th:replace="~{fragments/nav :: nav}"></header>
 <main>
     <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Search Results</span></h1>
     <hr class="hr-3 w-25 bg-white"/>
@@ -25,7 +25,7 @@
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
                                 <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
-                                <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+                                <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
                             </div>
                         </div>
                     </div>
@@ -34,6 +34,9 @@
         </div>
     </div>
 </main>
-<footer th:replace="fragments/commons::footer"></footer>
+<footer th:replace="fragments/footer :: footer"></footer>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
