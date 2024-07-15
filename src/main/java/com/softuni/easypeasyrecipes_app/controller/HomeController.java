@@ -21,7 +21,8 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("recentRecipes", recipeService.findApprovedRecipes());
         return "index";
     }
 
