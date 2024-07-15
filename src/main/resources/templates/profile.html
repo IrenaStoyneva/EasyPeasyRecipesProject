@@ -22,7 +22,7 @@
                             <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
                             <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
                             <a th:href="@{/profile/edit-recipe/{id}(id=${recipe.id})}" class="btn btn-secondary btn-block mb-2">Edit</a>
-                            <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" style="display:inline-block;">
+                            <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" th:method="delete" style="display:inline-block;">
                                 <button class="btn btn-danger btn-block" type="submit">Delete</button>
                             </form>
                         </div>
@@ -39,7 +39,7 @@
                             <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
                             <p class="text-warning">This recipe is pending approval</p>
                             <a th:href="@{/profile/edit-recipe/{id}(id=${recipe.id})}" class="btn btn-secondary btn-block mb-2">Edit</a>
-                            <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" style="display:inline-block;">
+                            <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" th:method="delete" style="display:inline-block;">
                                 <button class="btn btn-danger btn-block" type="submit">Delete</button>
                             </form>
                         </div>
@@ -60,7 +60,9 @@
 </main>
 <footer class="footer mt-5 py-3 bg-light">
     <div class="container">
-        <span class="text-muted">© 2024 EasyPeasyRecipes</span>
+        <span class="text-muted">© 2024 EasyPeasyRecipes. All Rights Reserved.</span>
+        <br>
+        <a href="/contact-us">Contact Us</a>
     </div>
 </footer>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>

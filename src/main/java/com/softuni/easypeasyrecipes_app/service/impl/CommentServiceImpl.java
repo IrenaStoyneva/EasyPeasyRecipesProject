@@ -9,6 +9,8 @@ import com.softuni.easypeasyrecipes_app.repository.CommentRepository;
 import com.softuni.easypeasyrecipes_app.repository.RecipeRepository;
 import com.softuni.easypeasyrecipes_app.repository.UserRepository;
 import com.softuni.easypeasyrecipes_app.service.CommentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +66,7 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findAll();
     }
 
+    @Override
     public void deleteComment(Long id) {
         commentRepository.deleteById(id);
     }

@@ -125,7 +125,7 @@ public class ProfileController {
         }
     }
 
-    @PostMapping("/delete-recipe/{id}")
+    @DeleteMapping("/delete-recipe/{id}")
     public String deleteRecipe(@PathVariable Long id) {
         recipeService.deleteRecipe(id);
         return "redirect:/profile";

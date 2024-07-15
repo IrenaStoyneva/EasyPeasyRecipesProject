@@ -3,24 +3,33 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>EasyPeasyRecipe</title>
-
+    <title>EasyPeasyRecipes</title>
+    <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    >
+    <!-- Font Awesome CSS -->
     <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css"/>
 </head>
 <body>
-<header th:replace="fragments/nav :: nav"></header>
+<header th:replace="~{fragments/nav :: nav}"></header>
 <main class="container mt-5">
-    <h1>Welcome to EasyPeasyRecipe</h1>
-    <p>Your one-stop solution for all your recipe needs. Browse through our categories and find the perfect recipe for any occasion!</p>
+    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Welcome to EasyPeasyRecipes</span></h1>
+    <hr class="hr-3 w-25 bg-dark"/>
+    <p class="text-center">Discover and share the best recipes for every meal and occasion.</p>
 
-    <div class="recent-recipes">
-        <h2>Recently Added Recipes</h2>
+    <div class="about-us text-center mt-5">
+        <h2>About Us</h2>
+        <p>EasyPeasyRecipes is your ultimate destination for delicious and easy-to-make recipes. Whether you are an experienced chef or just starting out in the kitchen, we have something for everyone. Our collection of recipes covers a wide range of cuisines and dietary preferences, ensuring that there is something to suit every taste and occasion.</p>
+        <p>Our mission is to inspire and empower home cooks by providing them with the tools and resources they need to create amazing meals. We believe that cooking should be fun, easy, and accessible to everyone, which is why we strive to make our recipes simple to follow and full of flavor.</p>
+        <p>Join our community of food lovers and start exploring the endless possibilities that EasyPeasyRecipes has to offer. From quick weeknight dinners to elaborate holiday feasts, we have all the recipes you need to make every meal special.</p>
+        <p>So what are you waiting for? Dive in, get inspired, and start cooking with EasyPeasyRecipes today!</p>
+    </div>
+
+    <div class="recent-recipes mt-5">
+        <h2 class="text-center">Recent Recipes</h2>
         <div class="row">
-            <div class="col-md-4" th:each="recipe : ${recentRecipes}">
-                <div class="card mb-4">
+            <div class="col-md-4 mb-4" th:each="recipe : ${recentRecipes}">
+                <div class="card">
                     <img class="card-img-top" th:src="${recipe.imageUrl}" alt="Card image cap">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
@@ -32,7 +41,9 @@
         </div>
     </div>
 </main>
-<footer th:replace="fragments/footer :: footer"></footer>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa4GfVPe4pjR8Uu4o8TB8dTqZ" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

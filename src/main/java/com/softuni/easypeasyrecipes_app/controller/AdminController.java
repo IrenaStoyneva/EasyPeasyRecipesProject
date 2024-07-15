@@ -9,6 +9,8 @@ import com.softuni.easypeasyrecipes_app.service.CategoryService;
 import com.softuni.easypeasyrecipes_app.service.CommentService;
 import com.softuni.easypeasyrecipes_app.service.RecipeService;
 import com.softuni.easypeasyrecipes_app.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ public class AdminController {
     private final RecipeService recipeService;
     private final CommentService commentService;
     private final CategoryService categoryService;
+
 
     public AdminController(UserService userService, RecipeService recipeService, CommentService commentService, CategoryService categoryService) {
         this.userService = userService;
@@ -77,7 +80,7 @@ public class AdminController {
         return "redirect:/admin/recipes";
     }
 
-    @PostMapping("/recipes/delete/{id}")
+    @DeleteMapping("/recipes/delete/{id}")
     public String deleteRecipe(@PathVariable Long id) {
         recipeService.deleteRecipe(id);
         return "redirect:/admin/recipes";
