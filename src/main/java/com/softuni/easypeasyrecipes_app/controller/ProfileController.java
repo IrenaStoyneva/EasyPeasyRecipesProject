@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -40,11 +41,15 @@ public class ProfileController {
 
     @GetMapping()
     public String viewProfile(Model model) {
-        Optional<User> userOptional = userService.findById(userSession.id());
+        Long userId = userSession.id();
+        Optional<User> userOptional = userService.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+            List<Recipe> approvedRecipes = recipeService.findApprovedByUserId(userId);
+            List<Recipe> pendingRecipes = recipeService.findPendingByUserId(userId);
             model.addAttribute("user", user);
-            model.addAttribute("recipes", recipeService.findByUserId(user.getId()));
+            model.addAttribute("recipes", approvedRecipes);
+            model.addAttribute("pendingRecipes", pendingRecipes);
             return "profile";
         } else {
             return "error/404";

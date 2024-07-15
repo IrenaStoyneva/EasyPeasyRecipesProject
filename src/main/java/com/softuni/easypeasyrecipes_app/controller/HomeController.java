@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
@@ -25,9 +26,8 @@ public class HomeController {
     }
 
     @GetMapping("/home")
-    public String home(Model model) {
-        List<Recipe> recentRecipes = recipeService.getRecentRecipes();
-        model.addAttribute("recentRecipes", recentRecipes);
+    public String showHome(Model model) {
+        model.addAttribute("recentRecipes", recipeService.findApprovedRecipes());
         return "home";
     }
 }

@@ -19,7 +19,14 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     List<Recipe> findByAddedBy_Id(Long userId);
 
-
     @Query("SELECT r FROM Recipe r ORDER BY (SELECT AVG(rt.value) FROM Rating rt WHERE rt.recipe = r) DESC")
     List<Recipe> findTopRecipes();
+
+    List<Recipe> findByApprovedTrue();
+
+    List<Recipe> findByAddedByIdAndApprovedFalse(Long userId);
+
+    List<Recipe> findByAddedByIdAndApprovedTrue(Long userId);
+
+
 }

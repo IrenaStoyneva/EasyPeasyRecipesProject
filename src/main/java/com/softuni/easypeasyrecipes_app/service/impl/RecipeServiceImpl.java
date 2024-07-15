@@ -99,11 +99,27 @@ public class RecipeServiceImpl implements RecipeService {
         recipeRepository.deleteById(recipeId);
     }
 
+    @Override
     public void approveRecipe(Long id) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid recipe Id:" + id));
         recipe.setApproved(true);
         recipeRepository.save(recipe);
+    }
+
+    @Override
+    public List<Recipe> findApprovedRecipes() {
+        return recipeRepository.findByApprovedTrue();
+    }
+
+    @Override
+    public List<Recipe> findPendingByUserId(Long userId) {
+        return recipeRepository.findByAddedByIdAndApprovedFalse(userId);
+    }
+
+    @Override
+    public List<Recipe> findApprovedByUserId(Long id) {
+        return recipeRepository.findByAddedByIdAndApprovedTrue(id);
     }
 }
 

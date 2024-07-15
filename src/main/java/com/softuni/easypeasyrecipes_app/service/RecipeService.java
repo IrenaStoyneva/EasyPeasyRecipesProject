@@ -27,5 +27,13 @@ public interface RecipeService {
     void deleteRecipe(Long id);
 
     void approveRecipe(Long id);
+
+    List<Recipe> findApprovedRecipes();
+
+    List<Recipe> findPendingByUserId(Long userId);
+
+    List<Recipe> findApprovedByUserId(Long id);
+
+
 }
 

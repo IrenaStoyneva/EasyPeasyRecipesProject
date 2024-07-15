@@ -103,7 +103,7 @@ public class RecipeController {
 
     @GetMapping("/recipes")
     public String viewRecipes(Model model) {
-        List<Recipe> recipes = recipeService.getAllRecipes();
+        List<Recipe> recipes = recipeService.findApprovedRecipes();
         model.addAttribute("recipes", recipes);
         return "recipes";
     }
