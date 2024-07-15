@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css"/>
 </head>
 <body>
 <header th:replace="~{fragments/nav :: nav}"></header>
 <main class="container mt-5">
-    <h1>Admin Panel</h1>
-    <ul>
-        <li><a th:href="@{/admin/users}">Manage Users</a></li>
-        <li><a th:href="@{/admin/recipes}">Manage Recipes</a></li>
-        <li><a th:href="@{/admin/comments}">Manage Comments</a></li>
-        <li><a th:href="@{/admin/categories}">Manage Categories</a></li>
-        <li><a th:href="@{/admin/statistics}">View Statistics</a></li>
-    </ul>
+    <h1 class="mb-4">Admin Panel</h1>
+    <div class="list-group">
+        <a th:href="@{/admin/users}" class="list-group-item list-group-item-action">Manage Users</a>
+        <a th:href="@{/admin/recipes}" class="list-group-item list-group-item-action">Manage Recipes</a>
+        <a th:href="@{/admin/comments}" class="list-group-item list-group-item-action">Manage Comments</a>
+        <a th:href="@{/admin/categories}" class="list-group-item list-group-item-action">Manage Categories</a>
+        <a th:href="@{/admin/statistics}" class="list-group-item list-group-item-action">View Statistics</a>
+    </div>
 </main>
-<footer th:replace="~{fragments/footer :: footer}"></footer>
+<footer th:replace="~{fragments/footer :: footer}" class="mt-5"></footer>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
