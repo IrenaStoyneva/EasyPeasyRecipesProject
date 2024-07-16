@@ -50,6 +50,8 @@ public class ProfileController {
             model.addAttribute("user", user);
             model.addAttribute("recipes", approvedRecipes);
             model.addAttribute("pendingRecipes", pendingRecipes);
+            model.addAttribute("hasApprovedRecipes", !approvedRecipes.isEmpty());
+            model.addAttribute("hasPendingRecipes", !pendingRecipes.isEmpty());
             return "profile";
         } else {
             return "error/404";

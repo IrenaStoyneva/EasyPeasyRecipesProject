@@ -3,68 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile</title>
+    <title>Profile</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css"/>
 </head>
 <body>
-<header th:replace="fragments/nav :: nav"></header>
+<header th:replace="~{fragments/nav :: nav}"></header>
 <main class="container mt-5">
-    <div class="row">
-        <div class="col-md-8">
-            <h2>My Approved Recipes</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4" th:each="recipe : ${recipes}">
-                    <div class="card h-100">
-                        <img class="card-img-top" th:src="${recipe.imageUrl}" alt="Recipe Image">
-                        <div class="card-body">
-                            <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
-                            <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
-                            <a th:href="@{/profile/edit-recipe/{id}(id=${recipe.id})}" class="btn btn-secondary btn-block mb-2">Edit</a>
-                            <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" th:method="delete" style="display:inline-block;">
-                                <button class="btn btn-danger btn-block" type="submit">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <h2>My Pending Recipes</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4" th:each="recipe : ${pendingRecipes}">
-                    <div class="card h-100">
-                        <img class="card-img-top" th:src="${recipe.imageUrl}" alt="Recipe Image">
-                        <div class="card-body">
-                            <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
-                            <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
-                            <p class="text-warning">This recipe is pending approval</p>
-                            <a th:href="@{/profile/edit-recipe/{id}(id=${recipe.id})}" class="btn btn-secondary btn-block mb-2">Edit</a>
-                            <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" th:method="delete" style="display:inline-block;">
-                                <button class="btn btn-danger btn-block" type="submit">Delete</button>
-                            </form>
-                        </div>
+    <h1>My Profile</h1>
+
+    <h2>My Pending Recipes</h2>
+    <div th:if="${hasPendingRecipes}">
+        <div class="row">
+            <div class="col-md-4" th:each="recipe : ${pendingRecipes}">
+                <div class="card mb-4">
+                    <img class="card-img-top" th:src="${recipe.imageUrl}" alt="Recipe Image">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+                        <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
+                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+                        <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" style="display:inline;">
+                            <input type="hidden" name="_method" value="delete">
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title" th:text="${user.username}">Username</h5>
-                    <p class="card-text"><i class="fas fa-envelope"></i> <span th:text="${user.email}">Email</span></p>
-                    <a class="btn btn-primary btn-block" th:href="@{/profile/edit}">Edit Profile</a>
+    </div>
+    <div th:if="${!hasPendingRecipes}">
+        <p>No recipes waiting for approval.</p>
+    </div>
+
+    <h2>My Approved Recipes</h2>
+    <div th:if="${hasApprovedRecipes}">
+        <div class="row">
+            <div class="col-md-4" th:each="recipe : ${recipes}">
+                <div class="card mb-4">
+                    <img class="card-img-top" th:src="${recipe.imageUrl}" alt="Recipe Image">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+                        <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
+                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+                        <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" style="display:inline;">
+                            <input type="hidden" name="_method" value="delete">
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div th:if="${!hasApprovedRecipes}">
+        <p>You have no recipes yet.</p>
     </div>
 </main>
-<footer class="footer mt-5 py-3 bg-light">
-    <div class="container">
-        <span class="text-muted">© 2024 EasyPeasyRecipes. All Rights Reserved.</span>
-        <br>
-        <a href="/contact-us">Contact Us</a>
-    </div>
-</footer>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
