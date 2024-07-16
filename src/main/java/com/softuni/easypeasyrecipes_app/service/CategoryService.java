@@ -15,5 +15,7 @@ public interface CategoryService {
     void save(Category category);
 
     void delete(Long id);
+
+    Category findByName(CategoryEnum categoryEnum);
 }
 

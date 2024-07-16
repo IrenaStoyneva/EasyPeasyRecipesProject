@@ -5,9 +5,11 @@ import com.softuni.easypeasyrecipes_app.model.dto.AddRecipeDto;
 import com.softuni.easypeasyrecipes_app.model.entity.Category;
 import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
 import com.softuni.easypeasyrecipes_app.model.entity.User;
+import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
 import com.softuni.easypeasyrecipes_app.repository.CategoryRepository;
 import com.softuni.easypeasyrecipes_app.repository.RecipeRepository;
 import com.softuni.easypeasyrecipes_app.repository.UserRepository;
+import com.softuni.easypeasyrecipes_app.service.CategoryService;
 import com.softuni.easypeasyrecipes_app.service.RecipeService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -25,14 +27,17 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final UserSession userSession;
+    private final CategoryService categoryService;
 
 
-    public RecipeServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper, RecipeRepository recipeRepository, UserRepository userRepository, UserSession userSession) {
+
+    public RecipeServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper, RecipeRepository recipeRepository, UserRepository userRepository, UserSession userSession, CategoryService categoryService) {
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
         this.userSession = userSession;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -120,6 +125,11 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public List<Recipe> findApprovedByUserId(Long id) {
         return recipeRepository.findByAddedByIdAndApprovedTrue(id);
+    }
+
+    public List<Recipe> findRecipesByCategory(CategoryEnum categoryEnum) {
+        Category category = categoryService.findByName(categoryEnum);
+        return recipeRepository.findByCategory(category);
     }
 }
 

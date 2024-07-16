@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipes - [[${category}]]</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+<header th:replace="fragments/nav :: nav"></header>
+<main class="container mt-5">
+  <h1>All [[${category}]] Recipes</h1>
+  <div class="row">
+    <div class="col-md-4 mb-3" th:each="recipe : ${recipes}">
+      <div class="card">
+        <img th:src="${recipe.imageUrl}" class="card-img-top" alt="Recipe Image">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+          <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer th:replace="fragments/footer :: footer"></footer>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

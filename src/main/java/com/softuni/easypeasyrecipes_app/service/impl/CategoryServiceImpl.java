@@ -35,4 +35,9 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(Long id) {
      categoryRepository.deleteById(id);
     }
+    @Override
+    public Category findByName(CategoryEnum name) {
+        return categoryRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + name));
+    }
 }

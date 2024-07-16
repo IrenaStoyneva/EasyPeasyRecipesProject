@@ -12,4 +12,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByName(CategoryEnum name);
 
     Optional<Category> findById(long id);
+
 }

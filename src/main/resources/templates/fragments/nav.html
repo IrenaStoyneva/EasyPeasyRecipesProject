@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyPeasyRecipe</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome CSS -->
-    <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css"/>
-</head>
-<body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -25,11 +12,11 @@
                             Recipes
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="/recipes/breakfast">Breakfast</a>
-                            <a class="dropdown-item" href="/recipes/lunch">Lunch</a>
-                            <a class="dropdown-item" href="/recipes/dinner">Dinner</a>
-                            <a class="dropdown-item" href="/recipes/dessert">Dessert</a>
-                            <a class="dropdown-item" href="/recipes/healthy">Healthy</a>
+                            <a class="dropdown-item" th:href="@{/recipes/Breakfast}">Breakfast</a>
+                            <a class="dropdown-item" th:href="@{/recipes/Lunch}">Lunch</a>
+                            <a class="dropdown-item" th:href="@{/recipes/Dinner}">Dinner</a>
+                            <a class="dropdown-item" th:href="@{/recipes/Dessert}">Dessert</a>
+                            <a class="dropdown-item" th:href="@{/recipes/Healthy}">Healthy</a>
                         </div>
                     </li>
                 </ul>
@@ -63,29 +50,3 @@
         </div>
     </nav>
 </header>
-<main class="container mt-5">
-    <h1>Welcome to EasyPeasyRecipe</h1>
-    <p>Your one-stop solution for all your recipe needs. Browse through our categories and find the perfect recipe for any occasion!</p>
-
-    <div class="recent-recipes">
-        <h2>Recently Added Recipes</h2>
-        <div class="row">
-            <div class="col-md-4" th:each="recipe : ${recentRecipes}">
-                <div class="card mb-4">
-                    <img class="card-img-top" th:src="${recipe.imageUrl}" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
-                        <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
-                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-<footer th:replace="fragments/footer :: footer"></footer>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa4GfVPe4pjR8Uu4o8TB8dTqZ" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</body>
-</html>

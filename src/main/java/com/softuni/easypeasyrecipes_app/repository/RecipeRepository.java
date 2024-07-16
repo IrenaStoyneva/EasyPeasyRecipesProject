@@ -1,6 +1,8 @@
 package com.softuni.easypeasyrecipes_app.repository;
 
+import com.softuni.easypeasyrecipes_app.model.entity.Category;
 import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
+import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -28,5 +30,5 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     List<Recipe> findByAddedByIdAndApprovedTrue(Long userId);
 
-
+    List<Recipe> findByCategory(Category category);
 }
