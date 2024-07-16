@@ -78,6 +78,18 @@ h1, h2 {
 h1 {
     margin-bottom: 20px;
 }
+.table-container thead {
+    background-color: #2a5934;
+    color: white;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
 
 .table thead {
     background-color: #006400;
