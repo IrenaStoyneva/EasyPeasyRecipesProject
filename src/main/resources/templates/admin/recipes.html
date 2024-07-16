@@ -5,35 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Recipes</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet"> <!-- Включете CSS файла -->
 </head>
 <body>
 <header th:replace="~{fragments/nav :: nav}"></header>
 <main class="container mt-5">
-    <h1>Recipes</h1>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="recipe : ${recipes}">
-            <td th:text="${recipe.name}"></td>
-            <td th:text="${recipe.description}"></td>
-            <td>
-                <form th:action="@{/admin/recipes/approve/{id}(id=${recipe.id})}" method="post" style="display:inline;">
-                    <button class="btn btn-success" type="submit">Approve</button>
-                </form>
-                <form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post" style="display:inline;">
-                    <input type="hidden" name="_method" value="delete">
-                    <button class="btn btn-danger" type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <h1 class="text-center">Recipes</h1>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Image</th> <!-- Нова колона за изображението -->
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="recipe : ${recipes}">
+                <td>
+                    <img th:src="${recipe.imageUrl}" alt="Recipe Image" class="img-thumbnail" style="width: 100px; height: 100px;">
+                </td>
+                <td th:text="${recipe.name}"></td>
+                <td th:text="${recipe.description}"></td>
+                <td>
+                    <form th:action="@{/admin/recipes/approve/{id}(id=${recipe.id})}" method="post" style="display:inline;">
+                        <button class="btn btn-success" type="submit">Approve</button>
+                    </form>
+                    <form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post" style="display:inline;">
+                        <input type="hidden" name="_method" value="delete">
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </main>
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
