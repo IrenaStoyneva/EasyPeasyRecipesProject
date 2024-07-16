@@ -24,7 +24,8 @@ public class CategoryController {
     public String viewRecipesByCategory(@PathVariable("category") CategoryEnum category, Model model) {
         List<Recipe> recipes = recipeService.findRecipesByCategory(category);
         model.addAttribute("recipes", recipes);
-        model.addAttribute("category", category);
+        model.addAttribute("category", category.name());
+        model.addAttribute("hasRecipes", !recipes.isEmpty());
         return "category-recipes";
     }
 }

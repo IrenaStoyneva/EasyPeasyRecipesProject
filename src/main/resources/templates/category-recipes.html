@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Recipes - [[${category}]]</title>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
@@ -12,14 +12,25 @@
 <header th:replace="fragments/nav :: nav"></header>
 <main class="container mt-5">
   <h1>All [[${category}]] Recipes</h1>
-  <div class="row">
-    <div class="col-md-4 mb-3" th:each="recipe : ${recipes}">
-      <div class="card">
-        <img th:src="${recipe.imageUrl}" class="card-img-top" alt="Recipe Image">
-        <div class="card-body">
-          <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
-          <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+  <div class="recent-recipes">
+    <div class="row" th:if="${hasRecipes}">
+      <div class="col-md-4" th:each="recipe : ${recipes}">
+        <div class="card mb-4">
+          <img class="card-img-top" th:src="${recipe.imageUrl}" alt="Recipe Image">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+            <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
+            <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+          </div>
         </div>
+      </div>
+    </div>
+    <div class="row" th:if="${!hasRecipes}">
+      <div class="col-12 text-center">
+        <p class="text-muted">
+          No recipes available for the selected category. Be the first to contribute!
+          <a href="/register" class="font-weight-bold">Register now</a> and add your own delicious recipes to inspire others.
+        </p>
       </div>
     </div>
   </div>
