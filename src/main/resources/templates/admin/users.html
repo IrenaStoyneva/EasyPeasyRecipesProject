@@ -11,28 +11,31 @@
 <header th:replace="~{fragments/nav :: nav}"></header>
 <main class="container mt-5">
     <h1 class="mb-4">Users</h1>
-    <table class="table table-hover">
-        <thead class="thead-dark">
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.email}"></td>
-            <td>
-                <div class="btn-group" role="group">
-                    <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
-                        <button class="btn btn-danger" type="submit">Delete</button>
-                    </form>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
+                            <input type="hidden" name="_method" value="delete">
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </main>
 <footer th:replace="~{fragments/footer :: footer}" class="mt-5"></footer>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
