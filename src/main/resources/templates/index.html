@@ -28,8 +28,8 @@
     <div class="recent-recipes mt-5">
         <h2 class="text-center">Recent Recipes</h2>
         <div class="row" th:each="recipe : ${recentRecipes}">
-            <div class="col-md-4 mb-3">
-                <div class="card h-100">
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-3 d-flex">
+                <div class="card h-100 flex-fill">
                     <img th:src="@{${recipe.imageUrl}}" class="card-img-top" alt="Recipe Image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
