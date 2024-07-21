@@ -6,13 +6,11 @@ import com.softuni.easypeasyrecipes_app.model.dto.CommentDto;
 import com.softuni.easypeasyrecipes_app.model.dto.RatingDto;
 import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
 import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
-import com.softuni.easypeasyrecipes_app.service.CategoryService;
-import com.softuni.easypeasyrecipes_app.service.CommentService;
-import com.softuni.easypeasyrecipes_app.service.RatingService;
-import com.softuni.easypeasyrecipes_app.service.RecipeService;
+import com.softuni.easypeasyrecipes_app.service.*;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -38,18 +36,17 @@ import java.util.stream.Collectors;
 public class RecipeController {
     private final RecipeService recipeService;
     private final ModelMapper modelMapper;
-    private final UserSession userSession;
     private final CommentService commentService;
     private final RatingService ratingService;
+    private final UserService userService;
 
     @Autowired
-    public RecipeController(RecipeService recipeService, ModelMapper modelMapper, UserSession userSession, CommentService commentService, RatingService ratingService) {
+    public RecipeController(RecipeService recipeService, ModelMapper modelMapper, CommentService commentService, RatingService ratingService, UserService userService) {
         this.recipeService = recipeService;
         this.modelMapper = modelMapper;
-        this.userSession = userSession;
         this.commentService = commentService;
-
         this.ratingService = ratingService;
+        this.userService = userService;
     }
 
     @ModelAttribute("addRecipeDto")
@@ -77,7 +74,11 @@ public class RecipeController {
             String imageUrl = saveImage(addRecipeDto.getImageFile());
             addRecipeDto.setImageUrl(imageUrl);
 
-            long userId = userSession.id();
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String username = userDetails.getUsername();
+
+            long userId = userService.findUserIdByUsername(username);
 
             recipeService.create(addRecipeDto, imageUrl, userId);
         } catch (IOException e) {
@@ -122,7 +123,6 @@ public class RecipeController {
                 comment.setFormattedDate(comment.getCreatedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 return comment;
             }).collect(Collectors.toList()));
-
 
             Double averageRating = ratingService.calculateAverageRating(id);
             Integer totalVotes = ratingService.countVotes(id);

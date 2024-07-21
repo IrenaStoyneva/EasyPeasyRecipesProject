@@ -29,7 +29,7 @@
                 <td th:text="${recipe.name}"></td>
                 <td th:text="${recipe.description}"></td>
                 <td>
-                    <form th:action="@{/admin/recipes/approve/{id}(id=${recipe.id})}" method="post" style="display:inline;">
+                    <form th:unless="${recipe.approved}" th:action="@{/admin/recipes/approve/{id}(id=${recipe.id})}" method="post" style="display:inline;">
                         <button class="btn btn-success" type="submit">Approve</button>
                     </form>
                     <form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post" style="display:inline;">

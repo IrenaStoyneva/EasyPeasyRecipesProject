@@ -58,7 +58,7 @@ public class RecipeServiceImpl implements RecipeService {
         recipe.setImageUrl(imageUrl);
         recipe.setCreatedOn(LocalDateTime.now());
 
-        Optional<User> userOptional = userRepository.findById(userSession.id());
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()) {
             throw new IllegalArgumentException("User not found");
         }
@@ -131,6 +131,7 @@ public class RecipeServiceImpl implements RecipeService {
         Category category = categoryService.findByName(categoryEnum);
         return recipeRepository.findByCategory(category);
     }
+
 }
 
 

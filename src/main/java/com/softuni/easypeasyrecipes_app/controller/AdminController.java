@@ -1,10 +1,9 @@
 package com.softuni.easypeasyrecipes_app.controller;
 
-import com.softuni.easypeasyrecipes_app.model.entity.Category;
-import com.softuni.easypeasyrecipes_app.model.entity.Comment;
-import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
-import com.softuni.easypeasyrecipes_app.model.entity.User;
+import com.softuni.easypeasyrecipes_app.model.entity.*;
 import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
+import com.softuni.easypeasyrecipes_app.model.enums.RoleEnum;
+import com.softuni.easypeasyrecipes_app.repository.UserRoleRepository;
 import com.softuni.easypeasyrecipes_app.service.CategoryService;
 import com.softuni.easypeasyrecipes_app.service.CommentService;
 import com.softuni.easypeasyrecipes_app.service.RecipeService;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -27,13 +27,15 @@ public class AdminController {
     private final RecipeService recipeService;
     private final CommentService commentService;
     private final CategoryService categoryService;
+    private final UserRoleRepository userRoleRepository;
 
 
-    public AdminController(UserService userService, RecipeService recipeService, CommentService commentService, CategoryService categoryService) {
+    public AdminController(UserService userService, RecipeService recipeService, CommentService commentService, CategoryService categoryService, UserRoleRepository userRoleRepository) {
         this.userService = userService;
         this.recipeService = recipeService;
         this.commentService = commentService;
         this.categoryService = categoryService;
+        this.userRoleRepository = userRoleRepository;
     }
 
     @GetMapping
@@ -44,15 +46,17 @@ public class AdminController {
     @GetMapping("/users")
     public String viewUsers(Model model) {
         List<User> users = userService.findAllUsers();
+        List<UserRole> allRoles = userRoleRepository.findAll();
         model.addAttribute("users", users);
+        model.addAttribute("allRoles", allRoles);
         return "admin/users";
     }
-
-    @PostMapping("/users/delete/{id}")
+    @DeleteMapping("/users/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin/users";
     }
+
 
     @GetMapping("/comments")
     public String viewComments(Model model) {
@@ -61,7 +65,7 @@ public class AdminController {
         return "admin/comments";
     }
 
-    @PostMapping("/comments/delete/{id}")
+    @DeleteMapping("/comments/delete/{id}")
     public String deleteComment(@PathVariable Long id) {
         commentService.deleteComment(id);
         return "redirect:/admin/comments";
@@ -128,5 +132,11 @@ public class AdminController {
     public String deleteCategory(@PathVariable Long id) {
         categoryService.delete(id);
         return "redirect:/admin/categories";
+    }
+
+    @PostMapping("/users/{id}/roles")
+    public String updateUserRoles(@PathVariable Long id, @RequestParam("roles") Set<RoleEnum> roles) {
+        userService.updateUserRoles(id, roles);
+        return "redirect:/admin/users";
     }
 }

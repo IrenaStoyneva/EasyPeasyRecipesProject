@@ -12,21 +12,18 @@
     <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/styles.css"/>
+    <style>
+        body, h1, h2, p {
+            font-family: 'STIX Two Text', serif;
+        }
+    </style>
 </head>
 <body>
 <header th:replace="~{fragments/nav :: nav}"></header>
-<main class="container mt-5 stix-font">
+<main class="container mt-5">
     <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Welcome to EasyPeasyRecipes</span></h1>
     <hr class="hr-3 w-25 bg-dark"/>
-    <p class="text-center stix-font">Discover and share the best recipes for every meal and occasion.</p>
-
-    <div class="about-us text-center mt-5">
-        <h2 class="stix-font">About Us</h2>
-        <p class="stix-font">EasyPeasyRecipes is your ultimate destination for delicious and easy-to-make recipes. Whether you are an experienced chef or just starting out in the kitchen, we have something for everyone. Our collection of recipes covers a wide range of cuisines and dietary preferences, ensuring that there is something to suit every taste and occasion.</p>
-        <p class="stix-font">Our mission is to inspire and empower home cooks by providing them with the tools and resources they need to create amazing meals. We believe that cooking should be fun, easy, and accessible to everyone, which is why we strive to make our recipes simple to follow and full of flavor.</p>
-        <p class="stix-font">Join our community of food lovers and start exploring the endless possibilities that EasyPeasyRecipes has to offer. From quick weeknight dinners to elaborate holiday feasts, we have all the recipes you need to make every meal special.</p>
-        <p class="stix-font">So what are you waiting for? Dive in, get inspired, and start cooking with EasyPeasyRecipes today!</p>
-    </div>
+    <p class="text-center">Discover and share the best recipes for every meal and occasion.</p>
 
     <div class="recent-recipes mt-5">
         <h2 class="text-center">Recent Recipes</h2>

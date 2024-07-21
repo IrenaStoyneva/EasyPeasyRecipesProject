@@ -17,6 +17,7 @@
             <tr>
                 <th>Username</th>
                 <th>Email</th>
+                <th>Roles</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -24,6 +25,18 @@
             <tr th:each="user : ${users}">
                 <td th:text="${user.username}"></td>
                 <td th:text="${user.email}"></td>
+                <td>
+                    <form th:action="@{/admin/users/{id}/roles(id=${user.id})}" method="post">
+                        <select name="roles" multiple class="form-control">
+                            <option th:each="role : ${allRoles}"
+                                    th:value="${role.role}"
+                                    th:text="${role.role}"
+                                    th:selected="${user.roles.contains(role)}">
+                            </option>
+                        </select>
+                        <button class="btn btn-primary mt-2" type="submit">Update Roles</button>
+                    </form>
+                </td>
                 <td>
                     <div class="btn-group" role="group">
                         <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;">

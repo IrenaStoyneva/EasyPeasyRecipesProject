@@ -12,6 +12,8 @@ import com.softuni.easypeasyrecipes_app.service.CommentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -41,13 +43,12 @@ public class CommentServiceImpl implements CommentService {
             throw new IllegalArgumentException("Recipe not found");
         }
 
-        Optional<User> userOptional = userRepository.findById(userSession.id());
-        if (userOptional.isEmpty()) {
+        User user = getCurrentUser();
+        if (user == null) {
             throw new IllegalArgumentException("User not found");
         }
 
         Recipe recipe = recipeOptional.get();
-        User user = userOptional.get();
 
         Comment comment = new Comment();
         comment.setContent(commentDto.getContent());
@@ -69,6 +70,16 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long id) {
         commentRepository.deleteById(id);
+    }
+
+    private User getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            return userRepository.findByUsername(username).orElse(null);
+        } else {
+            return null;
+        }
     }
 }
 

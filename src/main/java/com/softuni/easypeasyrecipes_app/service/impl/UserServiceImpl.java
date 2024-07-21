@@ -3,30 +3,40 @@ package com.softuni.easypeasyrecipes_app.service.impl;
 import com.softuni.easypeasyrecipes_app.config.UserSession;
 import com.softuni.easypeasyrecipes_app.model.dto.RegisterUserDto;
 import com.softuni.easypeasyrecipes_app.model.dto.UserLoginDto;
-import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
 import com.softuni.easypeasyrecipes_app.model.entity.User;
+import com.softuni.easypeasyrecipes_app.model.entity.UserRole;
+import com.softuni.easypeasyrecipes_app.model.enums.RoleEnum;
 import com.softuni.easypeasyrecipes_app.repository.UserRepository;
+import com.softuni.easypeasyrecipes_app.repository.UserRoleRepository;
 import com.softuni.easypeasyrecipes_app.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final UserSession userSession;
+    private final UserRoleRepository userRoleRepository;
 
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, ModelMapper modelMapper, UserSession userSession) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, ModelMapper modelMapper, UserSession userSession, UserRoleRepository userRoleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
         this.userSession = userSession;
+        this.userRoleRepository = userRoleRepository;
     }
 
     @Override
@@ -42,6 +52,11 @@ public class UserServiceImpl implements UserService {
 
         User user = modelMapper.map(registerUserDto, User.class);
         user.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
+
+        // Добавяне на роля "USER" по подразбиране
+        UserRole userRole = userRoleRepository.findByRole(RoleEnum.USER)
+                .orElseThrow(() -> new IllegalStateException("Role not found."));
+        user.setRoles(Set.of(userRole));
 
         userRepository.save(user);
     }
@@ -77,11 +92,57 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAllUsers() {
-        return userRepository.findAll();    }
+        return userRepository.findAll();
+    }
 
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+                .map(this::mapToUserDetails)
+                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
+    }
+
+    private UserDetails mapToUserDetails(User user) {
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .authorities(mapAuthorities(user.getRoles()))
+                .build();
+    }
+
+    private List<SimpleGrantedAuthority> mapAuthorities(Set<UserRole> roles) {
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().name()))
+                .collect(Collectors.toList());
+    }
+    @Override
+    public void updateUserRoles(Long userId, Set<RoleEnum> roles) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Set<UserRole> userRoles = roles.stream()
+                .map(roleEnum -> userRoleRepository.findByRole(roleEnum)
+                        .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleEnum)))
+                .collect(Collectors.toSet());
+
+        user.setRoles(userRoles);
+        userRepository.save(user);
+    }
+
+    @Override
+    public long findUserIdByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        return user.getId();
     }
 
 }
