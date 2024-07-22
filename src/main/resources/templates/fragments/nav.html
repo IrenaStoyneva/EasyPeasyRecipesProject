@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,21 +7,23 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css" />
 </head>
-
 <body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">EasyPeasyRecipe</a>
+            <a class="navbar-brand" th:href="@{/}">EasyPeasyRecipe</a>
             <i class="fas fa-utensils"></i>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/home}" th:text="#{navbar.home}">Home</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Recipes
+                            <span th:text="#{navbar.recipes}">Recipes</span>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" th:href="@{/recipes/Breakfast}">Breakfast</a>
@@ -35,38 +36,48 @@
                 </ul>
                 <form class="form-inline my-2 my-lg-0" action="/search" method="get">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" th:text="#{navbar.search}">Search</button>
                 </form>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link" href="/login">
-                            <i class="fas fa-user"></i> Login
+                        <a class="nav-link" th:href="@{/login}">
+                            <i class="fas fa-user"></i> <span th:text="#{navbar.login}">Login</span>
                         </a>
                     </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link" href="/register">Register</a>
+                        <a class="nav-link" th:href="@{/register}" th:text="#{navbar.register}">Register</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" href="/logout">Logout</a>
+                        <a class="nav-link" th:href="@{/logout}" th:text="#{navbar.logout}">Logout</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" href="/create/recipe">Add Recipe</a>
+                        <a class="nav-link" th:href="@{/create/recipe}" th:text="#{navbar.add_recipe}">Add Recipe</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" href="/profile">My Profile</a>
+                        <a class="nav-link" th:href="@{/profile}" th:text="#{navbar.profile}">My Profile</a>
                     </li>
                     <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a class="nav-link" href="/admin">Admin Panel</a>
+                        <a class="nav-link" th:href="@{/admin}" th:text="#{navbar.admin}">Admin Panel</a>
+                    </li>
+                    <li class="nav-item">
+                        <form th:method="get">
+                            <label class="text-grey" th:text="#{navbar.language}" for="lang"></label>
+                            <select
+                                    onchange="this.form.submit()"
+                                    id="lang"
+                                    name="lang">
+                                <option value="en_US" th:selected="${#locale.toString()} == 'en_US'">English</option>
+                                <option value="bg_BG" th:selected="${#locale.toString()} == 'bg_BG'">Български</option>
+                            </select>
+                        </form>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 </header>
-
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
-
 </html>

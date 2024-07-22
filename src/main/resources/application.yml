@@ -27,6 +27,9 @@ spring:
       max-file-size: 2MB
       max-request-size: 2MB
       location: uploads/
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 

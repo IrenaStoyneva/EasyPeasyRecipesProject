@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>EasyPeasyRecipes</title>
+    <title th:text="#{homepage.title}">EasyPeasyRecipes - Home</title>
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome CSS -->
@@ -20,13 +20,13 @@
 </head>
 <body>
 <header th:replace="~{fragments/nav :: nav}"></header>
-<main class="container mt-5">
-    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark">Welcome to EasyPeasyRecipes</span></h1>
+<main class="container mt-5 stix-font">
+    <h1 class="text-center mt-2"><span class="badge badge-pill badge-dark" th:text="#{homepage.welcome}">Welcome to EasyPeasyRecipes</span></h1>
     <hr class="hr-3 w-25 bg-dark"/>
-    <p class="text-center">Discover and share the best recipes for every meal and occasion.</p>
+    <p class="text-center" th:text="#{homepage.description}">Discover and share the best recipes for every meal and occasion.</p>
 
     <div class="recent-recipes mt-5">
-        <h2 class="text-center">Recent Recipes</h2>
+        <h2 class="text-center" th:text="#{homepage.recent_recipes}">Recent Recipes</h2>
         <div class="row" th:each="recipe : ${recentRecipes}">
             <div class="col-lg-4 col-md-6 col-sm-12 mb-3 d-flex">
                 <div class="card h-100 flex-fill">
@@ -34,7 +34,7 @@
                     <div class="card-body">
                         <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
                         <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
-                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+                        <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary" th:text="#{homepage.view_recipe}">View Recipe</a>
                     </div>
                 </div>
             </div>
