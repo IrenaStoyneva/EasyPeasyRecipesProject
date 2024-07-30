@@ -6,6 +6,7 @@ import com.softuni.easypeasyrecipes_app.model.entity.User;
 import com.softuni.easypeasyrecipes_app.model.enums.RoleEnum;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,4 +33,8 @@ public interface UserService {
     void updateUserRoles(Long id, Set<RoleEnum> roles);
 
     long findUserIdByUsername(String username);
+
+    Optional<User> getCurrentUser();
+
+    Object getUserRoles(User user);
 }

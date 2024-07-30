@@ -2,10 +2,12 @@ package com.softuni.easypeasyrecipes_app.model.entity;
 
 import jakarta.persistence.*;
 
+import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -118,4 +120,6 @@ public class User {
     public void setRole(UserRole userRole) {
         this.roles.add(userRole);
     }
+
+
 }

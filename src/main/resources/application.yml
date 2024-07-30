@@ -41,4 +41,12 @@ logging:
 
 server:
   port: 8080
-  address: localhost
+
+
+jwt:
+  secret: ${JWT_KEY}
+  expiration: ${JWT_EXPIRATION:60000}
+
+comments:
+  api:
+    baseUrl: "http://localhost:8081"

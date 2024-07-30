@@ -14,4 +14,5 @@ public class EasypeasyrecipesAppApplication {
         SpringApplication.run(EasypeasyrecipesAppApplication.class, args);
     }
 
+
 }

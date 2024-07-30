@@ -1,85 +1,65 @@
 package com.softuni.easypeasyrecipes_app.service.impl;
 
-import com.softuni.easypeasyrecipes_app.config.UserSession;
+
 import com.softuni.easypeasyrecipes_app.model.dto.CommentDto;
-import com.softuni.easypeasyrecipes_app.model.entity.Comment;
-import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
-import com.softuni.easypeasyrecipes_app.model.entity.User;
-import com.softuni.easypeasyrecipes_app.repository.CommentRepository;
-import com.softuni.easypeasyrecipes_app.repository.RecipeRepository;
-import com.softuni.easypeasyrecipes_app.repository.UserRepository;
+
 import com.softuni.easypeasyrecipes_app.service.CommentService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentRepository commentRepository;
-    private final RecipeRepository recipeRepository;
-    private final UserRepository userRepository;
-    private final UserSession userSession;
+    private static final Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
 
-    @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, RecipeRepository recipeRepository, UserRepository userRepository, UserSession userSession) {
-        this.commentRepository = commentRepository;
-        this.recipeRepository = recipeRepository;
-        this.userRepository = userRepository;
-        this.userSession = userSession;
+    private final RestClient restClient;
+    private final ModelMapper modelMapper;
+
+    public CommentServiceImpl(@Qualifier("commentsRestClient") RestClient restClient, ModelMapper modelMapper) {
+        this.restClient = restClient;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public void addComment(Long recipeId, CommentDto commentDto) {
-        Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
-        if (recipeOptional.isEmpty()) {
-            throw new IllegalArgumentException("Recipe not found");
-        }
-
-        User user = getCurrentUser();
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
-
-        Recipe recipe = recipeOptional.get();
-
-        Comment comment = new Comment();
-        comment.setContent(commentDto.getContent());
-        comment.setCreatedOn(LocalDateTime.now());
-        comment.setRecipe(recipe);
-        comment.setAuthor(user);
-
-        commentRepository.save(comment);
+    public List<CommentDto> getAllComments() {
+        logger.info("Fetching all comments from REST API...");
+        CommentDto[] comments = restClient.get()
+                .uri("/api/comments")
+                .retrieve()
+                .body(CommentDto[].class);
+        logger.info("Fetched {} comments", comments.length);
+        return Arrays.stream(comments)
+                .collect(Collectors.toList());
     }
 
-    public List<Comment> findCommentsByRecipeId(Long recipeId) {
-        return commentRepository.findByRecipeId(recipeId);
-    }
-
-    public List<Comment> findAllComments() {
-        return commentRepository.findAll();
+    @Override
+    public CommentDto addComment(Long recipeId, CommentDto commentDto) {
+        logger.info("Adding comment to recipe ID: {}", recipeId);
+        CommentDto savedComment = restClient.post()
+                .uri("/api/comments/recipe/{recipeId}", recipeId)
+                .body(commentDto)
+                .retrieve()
+                .body(CommentDto.class);
+        logger.info("Added comment with ID: {}", savedComment.getId());
+        return savedComment;
     }
 
     @Override
     public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
-    }
-
-    private User getCurrentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            String username = ((UserDetails) principal).getUsername();
-            return userRepository.findByUsername(username).orElse(null);
-        } else {
-            return null;
-        }
+        logger.info("Deleting comment with ID: {}", id);
+        restClient.delete()
+                .uri("/api/comments/{id}", id)
+                .retrieve()
+                .body(Void.class);
+        logger.info("Deleted comment with ID: {}", id);
     }
 }
-

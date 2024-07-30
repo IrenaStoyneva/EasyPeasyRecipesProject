@@ -10,7 +10,9 @@ import com.softuni.easypeasyrecipes_app.repository.UserRepository;
 import com.softuni.easypeasyrecipes_app.repository.UserRoleRepository;
 import com.softuni.easypeasyrecipes_app.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -145,4 +147,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return user.getId();
     }
 
+    public Optional<User> getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            return userRepository.findByUsername(username);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public List<String> getUserRoles(User user) {
+        return user.getRoles().stream()
+                .map(role -> "ROLE_" + role.getRole().name())
+                .collect(Collectors.toList());
+    }
 }
