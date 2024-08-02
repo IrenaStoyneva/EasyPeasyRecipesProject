@@ -6,9 +6,11 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -26,24 +28,28 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationForm() {
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid RegisterUserDto registerUserDto,
-                               BindingResult bindingResult, Model model) {
+    public String registerUser(@Valid @ModelAttribute("registerUserDto") RegisterUserDto registerUserDto,
+                               BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            return "register";
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerUserDto", bindingResult);
+            redirectAttributes.addFlashAttribute("registerUserDto", registerUserDto);
+            return "redirect:/register";
         }
 
         try {
             userService.registerUser(registerUserDto);
         } catch (IllegalArgumentException e) {
-            model.addAttribute("usernameError", e.getMessage());
-            return "register";
+            redirectAttributes.addFlashAttribute("globalError", e.getMessage());
+            redirectAttributes.addFlashAttribute("registerUserDto", registerUserDto);
+            return "redirect:/register";
         }
 
-        return "redirect:login";
+        redirectAttributes.addFlashAttribute("success", "You are successfully registered, please login!");
+        return "redirect:/login";
     }
 }

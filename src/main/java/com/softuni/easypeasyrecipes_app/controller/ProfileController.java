@@ -1,7 +1,6 @@
 package com.softuni.easypeasyrecipes_app.controller;
 
 
-import com.softuni.easypeasyrecipes_app.config.UserSession;
 import com.softuni.easypeasyrecipes_app.model.dto.EditRecipeDto;
 import com.softuni.easypeasyrecipes_app.model.entity.Category;
 import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
@@ -9,6 +8,7 @@ import com.softuni.easypeasyrecipes_app.model.entity.User;
 import com.softuni.easypeasyrecipes_app.service.CategoryService;
 import com.softuni.easypeasyrecipes_app.service.RecipeService;
 import com.softuni.easypeasyrecipes_app.service.UserService;
+import com.softuni.easypeasyrecipes_app.service.session.UserDetailsService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,19 +28,20 @@ import java.util.Optional;
 public class ProfileController {
     private final UserService userService;
     private final RecipeService recipeService;
-    private final UserSession userSession;
     private final PasswordEncoder passwordEncoder;
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
-    public ProfileController(UserService userService, RecipeService recipeService, UserSession userSession, PasswordEncoder passwordEncoder, CategoryService categoryService, ModelMapper modelMapper) {
+    public ProfileController(UserService userService, RecipeService recipeService, PasswordEncoder passwordEncoder, CategoryService categoryService, ModelMapper modelMapper, UserDetailsService userDetailService) {
         this.userService = userService;
         this.recipeService = recipeService;
-        this.userSession = userSession;
+
         this.passwordEncoder = passwordEncoder;
         this.categoryService = categoryService;
         this.modelMapper = modelMapper;
+        this.userDetailsService = userDetailService;
     }
 
     @GetMapping()
@@ -88,11 +89,11 @@ public class ProfileController {
                 existingUser.setEmail(user.getEmail());
                 userService.updateUser(existingUser);
 
-                // Update the authentication object with the new username
-                UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+                UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
                 UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(
                         userDetails, userDetails.getPassword(), userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(newAuth);
+
 
                 return "redirect:/profile";
             } else {

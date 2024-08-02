@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,19 +26,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
-    private final UserSession userSession;
     private final UserRoleRepository userRoleRepository;
 
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, ModelMapper modelMapper, UserSession userSession, UserRoleRepository userRoleRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, UserRoleRepository userRoleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
-        this.userSession = userSession;
         this.userRoleRepository = userRoleRepository;
     }
 
@@ -55,7 +54,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = modelMapper.map(registerUserDto, User.class);
         user.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
 
-        // Добавяне на роля "USER" по подразбиране
         UserRole userRole = userRoleRepository.findByRole(RoleEnum.USER)
                 .orElseThrow(() -> new IllegalStateException("Role not found."));
         user.setRoles(Set.of(userRole));
@@ -76,8 +74,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (!passMatch) {
             return false;
         }
-
-        userSession.login(byUsername.get().getId(), userLoginDto.getUsername());
 
         return true;
     }
@@ -105,26 +101,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
-    }
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
-                .map(this::mapToUserDetails)
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
-    }
-
-    private UserDetails mapToUserDetails(User user) {
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
-                .authorities(mapAuthorities(user.getRoles()))
-                .build();
-    }
-
-    private List<SimpleGrantedAuthority> mapAuthorities(Set<UserRole> roles) {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().name()))
-                .collect(Collectors.toList());
     }
     @Override
     public void updateUserRoles(Long userId, Set<RoleEnum> roles) {

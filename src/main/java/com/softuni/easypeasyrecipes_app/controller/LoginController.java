@@ -1,6 +1,5 @@
 package com.softuni.easypeasyrecipes_app.controller;
 
-import com.softuni.easypeasyrecipes_app.config.UserSession;
 import com.softuni.easypeasyrecipes_app.model.dto.UserLoginDto;
 import com.softuni.easypeasyrecipes_app.service.UserService;
 import jakarta.validation.Valid;
@@ -14,11 +13,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class LoginController {
 
-    private final UserSession userSession;
     private final UserService userService;
 
-    public LoginController(UserSession userSession, UserService userService) {
-        this.userSession = userSession;
+    public LoginController(UserService userService) {
         this.userService = userService;
     }
 
@@ -31,20 +28,17 @@ public class LoginController {
     public String showLoginForm() {
         return "login";
     }
+
     @PostMapping("/login")
     public String doLogin(
             @Valid UserLoginDto userLoginDto,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
-        if (userSession.isLoggedIn()) {
-            return "redirect:/home";
-        }
-
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("loginDto", userLoginDto);
             redirectAttributes.addFlashAttribute(
-                    "org.springframework.validation.BindingResult.loginData", bindingResult);
+                    "org.springframework.validation.BindingResult.loginDto", bindingResult);
             return "redirect:/login";
         }
 
@@ -52,7 +46,6 @@ public class LoginController {
 
         if (!success) {
             redirectAttributes.addFlashAttribute("loginError", true);
-
             return "redirect:/login";
         }
 
