@@ -5,8 +5,10 @@ import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
 import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,4 +33,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findByAddedByIdAndApprovedTrue(Long userId);
 
     List<Recipe> findByCategory(Category category);
+
+    @Query("SELECT r FROM Recipe r WHERE r.createdOn < :oneYearAgo AND SIZE(r.ratings) = 0")
+    List<Recipe> findRecipesWithoutRatingOlderThan(@Param("oneYearAgo") LocalDateTime oneYearAgo);
+
+    Optional<Recipe> findByName(String oldRecipe);
 }

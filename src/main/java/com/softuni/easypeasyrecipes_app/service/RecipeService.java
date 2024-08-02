@@ -1,10 +1,8 @@
 package com.softuni.easypeasyrecipes_app.service;
 
 import com.softuni.easypeasyrecipes_app.model.dto.AddRecipeDto;
-import com.softuni.easypeasyrecipes_app.model.dto.EditRecipeDto;
 import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
 import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +33,8 @@ public interface RecipeService {
 
     List<Recipe> findApprovedByUserId(Long id);
 
-
     List<Recipe> findRecipesByCategory(CategoryEnum category);
+
+    void deleteOldRecipesWithoutRatings();
 }
 

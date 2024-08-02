@@ -49,11 +49,7 @@ public class RecipeServiceImpl implements RecipeService {
             throw new IllegalArgumentException("Category not found");
         }
 
-        Recipe recipe = new Recipe();
-        recipe.setName(addRecipeDto.getName());
-        recipe.setDescription(addRecipeDto.getDescription());
-        recipe.setIngredients(addRecipeDto.getIngredients());
-        recipe.setInstructions(addRecipeDto.getInstructions());
+        Recipe recipe = modelMapper.map(addRecipeDto, Recipe.class);
         recipe.setCategory(categoryOptional.get());
         recipe.setImageUrl(imageUrl);
         recipe.setCreatedOn(LocalDateTime.now());
@@ -130,6 +126,14 @@ public class RecipeServiceImpl implements RecipeService {
     public List<Recipe> findRecipesByCategory(CategoryEnum categoryEnum) {
         Category category = categoryService.findByName(categoryEnum);
         return recipeRepository.findByCategory(category);
+    }
+
+    @Transactional
+    public void deleteOldRecipesWithoutRatings() {
+        LocalDateTime oneYearAgo = LocalDateTime.now().minusYears(1);
+        List<Recipe> oldRecipes = recipeRepository.findRecipesWithoutRatingOlderThan(oneYearAgo);
+        recipeRepository.deleteAll(oldRecipes);
+
     }
 
 }
