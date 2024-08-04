@@ -1,6 +1,8 @@
 package com.softuni.easypeasyrecipes_app.service.impl;
 
-import com.softuni.easypeasyrecipes_app.config.UserSession;
+
+import com.softuni.easypeasyrecipes_app.model.dto.ChangePasswordDto;
+import com.softuni.easypeasyrecipes_app.model.dto.ChangeUsernameDto;
 import com.softuni.easypeasyrecipes_app.model.dto.RegisterUserDto;
 import com.softuni.easypeasyrecipes_app.model.dto.UserLoginDto;
 import com.softuni.easypeasyrecipes_app.model.entity.User;
@@ -9,14 +11,13 @@ import com.softuni.easypeasyrecipes_app.model.enums.RoleEnum;
 import com.softuni.easypeasyrecipes_app.repository.UserRepository;
 import com.softuni.easypeasyrecipes_app.repository.UserRoleRepository;
 import com.softuni.easypeasyrecipes_app.service.UserService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
@@ -84,8 +85,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    @Transactional
+    public boolean changeUsername(String currentUsername, ChangeUsernameDto changeUsernameDto) {
+        User user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Проверете дали текущата парола е правилна
+        if (!passwordEncoder.matches(changeUsernameDto.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid current password");
+        }
+
+        // Проверете дали новото потребителско име е заето
+        if (userRepository.existsByUsername(changeUsernameDto.getNewUsername())) {
+            throw new IllegalArgumentException("Username already taken");
+        }
+
+        // Обновете потребителското име
+        user.setUsername(changeUsernameDto.getNewUsername());
+        userRepository.save(user);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean changePassword(String currentUsername, ChangePasswordDto changePasswordDto) {
+        Optional<User> userOptional = userRepository.findByUsername(currentUsername);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            if (!passwordEncoder.matches(changePasswordDto.getCurrentPassword(), user.getPassword())) {
+                throw new IllegalArgumentException("Invalid current password.");
+            }
+
+            user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -81,6 +81,8 @@ public class RecipeController {
             long userId = userService.findUserIdByUsername(username);
 
             recipeService.create(addRecipeDto, imageUrl, userId);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Recipe added successfully!");
         } catch (IOException e) {
             bindingResult.rejectValue("imageFile", "error.addRecipeDto", "Failed to save image");
             redirectAttributes.addFlashAttribute("addRecipeDto", addRecipeDto);

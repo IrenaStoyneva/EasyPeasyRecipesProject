@@ -13,10 +13,12 @@
     <h1 class="text-center"><span class="badge badge-pill badge-dark">Login</span></h1>
     <hr class="hr-3 w-25 bg-dark"/>
 
+    <!-- Success Message -->
     <div th:if="${success}" class="alert alert-success text-center" id="successMessage">
         <p th:text="${success}"></p>
     </div>
 
+    <!-- Error Message for login -->
     <div th:if="${param.error}" class="alert alert-danger text-center" id="loginErrorMessage">
         Invalid username or password.
     </div>
@@ -44,4 +46,3 @@
 <script th:src="@{/js/hideMessages.js}"></script>
 </body>
 </html>
-а

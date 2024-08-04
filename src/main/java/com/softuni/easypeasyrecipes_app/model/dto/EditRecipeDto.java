@@ -5,12 +5,12 @@ public class EditRecipeDto {
     private Long id;
     private String name;
     private String description;
-    private Long categoryId;  // Променете long на Long
+    private Long categoryId;
     private String ingredients;
     private String instructions;
     private String imageUrl;
 
-    // Гетъри и сетъри
+
     public Long getId() {
         return id;
     }

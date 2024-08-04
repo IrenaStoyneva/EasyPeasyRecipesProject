@@ -4,6 +4,7 @@ import com.softuni.easypeasyrecipes_app.repository.UserRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {
     private final UserRepository userRepository;
 

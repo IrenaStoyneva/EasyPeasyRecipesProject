@@ -4,39 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
-    <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome CSS -->
-    <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css"/>
 </head>
 <body>
-<header th:replace="fragments/nav :: nav"></header>
+<header th:replace="~{fragments/nav :: nav}"></header>
 <main class="container mt-5">
-    <h1>Edit Profile</h1>
-    <form th:action="@{/profile/edit}" method="post">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" th:value="${user.username}" required>
+    <!-- Формата за промяна на потребителското име -->
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Заглавие за смяна на потребителско име -->
+            <h2>Change Username</h2>
+            <!-- Съобщение за успех при смяна на потребителско име -->
+            <div th:if="${usernameSuccess}" class="alert alert-success" th:text="${usernameSuccess}" id="usernameSuccess"></div>
+
+            <form th:action="@{/profile/change-username}" th:object="${changeUsernameDto}" method="post">
+                <div class="form-group">
+                    <label for="newUsername">New Username</label>
+                    <input type="text" class="form-control" id="newUsername" th:field="*{newUsername}" required>
+                    <!-- Показване на грешка за потребителското име -->
+                    <div th:if="${#fields.hasErrors('newUsername')}" class="text-danger">
+                        <span th:errors="*{newUsername}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentPasswordUsername">Current Password</label>
+                    <input type="password" class="form-control" id="currentPasswordUsername" th:field="*{currentPassword}" required>
+                    <div th:if="${#fields.hasErrors('currentPassword')}" class="text-danger">
+                        <span th:errors="*{currentPassword}"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Change Username</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" th:value="${user.email}" required>
+
+        <div class="col-md-6">
+            <!-- Заглавие за смяна на парола -->
+            <h2>Change Password</h2>
+            <!-- Съобщение за успех при смяна на парола -->
+            <div th:if="${passwordSuccess}" class="alert alert-success" th:text="${passwordSuccess}" id="passwordSuccess"></div>
+
+            <!-- Форма за промяна на парола -->
+            <form th:action="@{/profile/change-password}" th:object="${changePasswordDto}" method="post">
+                <div class="form-group">
+                    <label for="currentPasswordPassword">Current Password</label>
+                    <input type="password" class="form-control" id="currentPasswordPassword" th:field="*{currentPassword}" required>
+                    <div th:if="${#fields.hasErrors('currentPassword')}" class="text-danger">
+                        <span th:errors="*{currentPassword}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" class="form-control" id="newPassword" th:field="*{newPassword}" required>
+                    <div th:if="${#fields.hasErrors('newPassword')}" class="text-danger">
+                        <span th:errors="*{newPassword}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" th:field="*{confirmPassword}" required>
+                    <div th:if="${#fields.hasErrors('confirmPassword')}" class="text-danger">
+                        <span th:errors="*{confirmPassword}"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Change Password</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="currentPassword">Current Password</label>
-            <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Change</button>
-    </form>
-</main>
-<footer class="footer mt-5 py-3 bg-light">
-    <div class="container">
-        <span class="text-muted">© 2024 EasyPeasyRecipes</span>
     </div>
-</footer>
+</main>
+
+<!-- Footer Section -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script th:src="@{/js/hideMessages.js}"></script>
 </body>
 </html>

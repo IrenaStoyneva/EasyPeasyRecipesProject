@@ -1,15 +1,20 @@
 document.addEventListener("DOMContentLoaded", function() {
-    setTimeout(function() {
-        var successMessage = document.getElementById("successMessage");
-        if (successMessage) {
-            successMessage.style.display = 'none';
-        }
-    }, 5000);
+    // Функция за скриване на елемент по ID след определено време
+    function hideMessageAfterTimeout(elementId, timeout) {
+        setTimeout(function() {
+            var element = document.getElementById(elementId);
+            if (element) {
+                element.style.display = 'none';
+            }
+        }, timeout);
+    }
 
-    setTimeout(function() {
-        var loginErrorMessage = document.getElementById("loginErrorMessage");
-        if (loginErrorMessage) {
-            loginErrorMessage.style.display = 'none';
-        }
-    }, 5000);
+    // Скриване на съобщенията за успех и грешка
+    hideMessageAfterTimeout("successMessage", 5000);
+    hideMessageAfterTimeout("loginErrorMessage", 5000);
+    hideMessageAfterTimeout("errorMessage", 5000);
+    hideMessageAfterTimeout("passwordSuccess", 5000);
+    hideMessageAfterTimeout("passwordError", 5000);
+    hideMessageAfterTimeout("usernameSuccess", 5000);
+    hideMessageAfterTimeout("recipeUpdateSuccess", 5000);
 });

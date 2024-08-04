@@ -3,6 +3,7 @@ package com.softuni.easypeasyrecipes_app.model.entity;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.nio.channels.MembershipKey;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -151,4 +152,6 @@ public class Recipe {
                 .average()
                 .orElse(0.0);
     }
+
+
 }

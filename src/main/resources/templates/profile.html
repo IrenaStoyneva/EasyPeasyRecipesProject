@@ -11,10 +11,16 @@
 <main class="container mt-5">
     <h1>My Profile</h1>
 
+    <!-- Success and Error messages -->
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <!-- Button to Edit Profile -->
     <div class="d-flex justify-content-end mb-3">
         <a th:href="@{/profile/edit}" class="btn btn-warning">Edit Profile</a>
     </div>
 
+    <!-- My Pending Recipes -->
     <h2>My Pending Recipes</h2>
     <div th:if="${hasPendingRecipes}">
         <div class="row">
@@ -25,6 +31,7 @@
                         <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
                         <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
                         <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+                        <a th:href="@{/profile/edit-recipe/{id}(id=${recipe.id})}" class="btn btn-warning">Edit</a>
                         <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" style="display:inline;">
                             <input type="hidden" name="_method" value="delete">
                             <button class="btn btn-danger" type="submit">Delete</button>
@@ -38,6 +45,7 @@
         <p>No recipes waiting for approval.</p>
     </div>
 
+    <!-- My Approved Recipes -->
     <h2>My Approved Recipes</h2>
     <div th:if="${hasApprovedRecipes}">
         <div class="row">
@@ -48,6 +56,7 @@
                         <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
                         <p class="card-text" th:text="${recipe.description}">Recipe Description</p>
                         <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+                        <a th:href="@{/profile/edit-recipe/{id}(id=${recipe.id})}" class="btn btn-warning">Edit</a>
                         <form th:action="@{/profile/delete-recipe/{id}(id=${recipe.id})}" method="post" style="display:inline;">
                             <input type="hidden" name="_method" value="delete">
                             <button class="btn btn-danger" type="submit">Delete</button>
@@ -65,5 +74,6 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script th:src="@{/js/hideMessages.js}"></script>
 </body>
 </html>
