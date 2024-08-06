@@ -1,57 +1,70 @@
-// rating.js
+document.addEventListener('DOMContentLoaded', function () {
+    const stars = document.querySelectorAll('.star');
+    const ratingValue = document.getElementById('rating-value');
+    const averageRatingElement = document.getElementById('average-rating');
+    const totalVotesElement = document.getElementById('total-votes');
+    const ratingForm = document.getElementById('rating-form');
 
-// To access the stars
-let stars = document.querySelectorAll(".star");
-let output = document.getElementById("average-rating");
-let ratingInput = document.getElementById("rating-value");
-let selectedRating = 0; // Add a variable to store the selected rating
 
-// Function to update rating
-function gfg(n) {
-    selectedRating = n; // Set the selected rating
-    ratingInput.value = selectedRating; // Update the hidden input value
-    remove();
-    for (let i = 0; i < n; i++) {
-        if (n == 1) cls = "one";
-        else if (n == 2) cls = "two";
-        else if (n == 3) cls = "three";
-        else if (n == 4) cls = "four";
-        else if (n == 5) cls = "five";
-        stars[i].className = "star " + cls;
-    }
-    output.innerText = "Rating is: " + n + "/5";
-}
+    const currentRating = parseFloat(averageRatingElement.textContent.trim());
 
-// To remove the pre-applied styling
-function remove() {
-    let i = 0;
-    while (i < 5) {
-        stars[i].className = "star";
-        i++;
-    }
-}
+    stars.forEach(star => {
+        if (parseFloat(star.getAttribute('data-value')) <= currentRating) {
+            star.classList.add('selected');
+        }
+    });
 
-// Handle rating submission
-document.addEventListener('DOMContentLoaded', (event) => {
-    const ratingForm = document.querySelector('.rating-section form');
-    if (ratingForm) {
-        ratingForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(ratingForm);
-            fetch(ratingForm.action, {
-                method: 'POST',
-                body: new URLSearchParams(formData)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        output.innerText = data.newAverageRating;
-                        gfg(data.newAverageRating);
-                    } else {
-                        console.error('Error:', data.errors);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+    stars.forEach(star => {
+        star.addEventListener('click', function () {
+
+            stars.forEach(s => s.classList.remove('selected'));
+
+            this.classList.add('selected');
+            let selectedValue = this.getAttribute('data-value');
+            ratingValue.value = selectedValue;
+
+            stars.forEach(s => {
+                if (s.getAttribute('data-value') <= selectedValue) {
+                    s.classList.add('selected');
+                }
+            });
         });
-    }
+    });
+
+    ratingForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(ratingForm);
+        const url = ratingForm.getAttribute('action');
+
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+
+                    averageRatingElement.textContent = data.newAverageRating.toFixed(1);
+                    totalVotesElement.textContent = parseInt(totalVotesElement.textContent) + 1;
+
+                    const newRating = data.newAverageRating;
+                    stars.forEach(s => {
+                        if (parseFloat(s.getAttribute('data-value')) <= newRating) {
+                            s.classList.add('selected');
+                        } else {
+                            s.classList.remove('selected');
+                        }
+                    });
+                } else {
+                    console.error('Error updating rating:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
 });

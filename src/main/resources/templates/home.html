@@ -4,13 +4,11 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:text="#{homepage.title}">EasyPeasyRecipes - Home</title>
-    <!-- Bootstrap CSS -->
+
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome CSS -->
     <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
+
     <link rel="stylesheet" href="/css/styles.css"/>
     <style>
         body, h1, h2, p {
@@ -27,9 +25,9 @@
 
     <div class="recent-recipes mt-5">
         <h2 class="text-center" th:text="#{homepage.recent_recipes}">Recent Recipes</h2>
-        <div class="row" th:each="recipe : ${recentRecipes}">
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-3 d-flex">
-                <div class="card h-100 flex-fill">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-3" th:each="recipe : ${recentRecipes}">
+                <div class="card h-100">
                     <img th:src="@{${recipe.imageUrl}}" class="card-img-top" alt="Recipe Image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>

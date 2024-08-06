@@ -1,15 +1,15 @@
 package com.softuni.easypeasyrecipes_app.controller;
 
+import com.softuni.easypeasyrecipes_app.model.dto.CommentDto;
 import com.softuni.easypeasyrecipes_app.model.entity.*;
-import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
+
 import com.softuni.easypeasyrecipes_app.model.enums.RoleEnum;
 import com.softuni.easypeasyrecipes_app.repository.UserRoleRepository;
 import com.softuni.easypeasyrecipes_app.service.CategoryService;
 import com.softuni.easypeasyrecipes_app.service.CommentService;
 import com.softuni.easypeasyrecipes_app.service.RecipeService;
 import com.softuni.easypeasyrecipes_app.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -28,14 +29,15 @@ public class AdminController {
     private final CommentService commentService;
     private final CategoryService categoryService;
     private final UserRoleRepository userRoleRepository;
+    private final ModelMapper modelMapper;
 
-
-    public AdminController(UserService userService, RecipeService recipeService, CommentService commentService, CategoryService categoryService, UserRoleRepository userRoleRepository) {
+    public AdminController(UserService userService, RecipeService recipeService, CommentService commentService, CategoryService categoryService, UserRoleRepository userRoleRepository, ModelMapper modelMapper) {
         this.userService = userService;
         this.recipeService = recipeService;
         this.commentService = commentService;
         this.categoryService = categoryService;
         this.userRoleRepository = userRoleRepository;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping
@@ -51,16 +53,19 @@ public class AdminController {
         model.addAttribute("allRoles", allRoles);
         return "admin/users";
     }
+
     @DeleteMapping("/users/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin/users";
     }
 
-
     @GetMapping("/comments")
     public String viewComments(Model model) {
-        List<Comment> comments = commentService.findAllComments();
+        List<CommentDto> commentDtos = commentService.getAllComments();
+        List<Comment> comments = commentDtos.stream()
+                .map(commentDto -> modelMapper.map(commentDto, Comment.class))
+                .collect(Collectors.toList());
         model.addAttribute("comments", comments);
         return "admin/comments";
     }
@@ -100,7 +105,6 @@ public class AdminController {
     @GetMapping("/categories/add")
     public String showAddCategoryForm(Model model) {
         model.addAttribute("category", new Category());
-        model.addAttribute("categoryEnums", Arrays.asList(CategoryEnum.values()));
         return "admin/add-category";
     }
 

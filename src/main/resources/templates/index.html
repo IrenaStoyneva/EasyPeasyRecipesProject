@@ -4,13 +4,9 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title th:text="#{indexpage.title}">EasyPeasyRecipes</title>
-    <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome CSS -->
     <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/styles.css"/>
     <style>
         body, h1, h2, p {
@@ -35,9 +31,9 @@
 
     <div class="recent-recipes mt-5">
         <h2 class="text-center" th:text="#{indexpage.recent_recipes}">Recent Recipes</h2>
-        <div class="row" th:each="recipe : ${recentRecipes}">
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-3 d-flex">
-                <div class="card h-100 flex-fill">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-3" th:each="recipe : ${recentRecipes}">
+                <div class="card h-100">
                     <img th:src="@{${recipe.imageUrl}}" class="card-img-top" alt="Recipe Image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
@@ -48,12 +44,14 @@
             </div>
         </div>
     </div>
+
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa4GfVPe4pjR8Uu4o8TB8dTqZ" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6Hty5KVphtPhzWj9WO1clHTMGa4GfVPe4pjR8Uu4o8TB8dTqZ" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>

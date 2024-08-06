@@ -1,11 +1,9 @@
 package com.softuni.easypeasyrecipes_app.controller;
 
-import com.softuni.easypeasyrecipes_app.config.UserSession;
 import com.softuni.easypeasyrecipes_app.model.dto.AddRecipeDto;
 import com.softuni.easypeasyrecipes_app.model.dto.CommentDto;
 import com.softuni.easypeasyrecipes_app.model.dto.RatingDto;
 import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
-import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
 import com.softuni.easypeasyrecipes_app.service.*;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -136,5 +134,12 @@ public class RecipeController {
         } else {
             return "error/404";
         }
+    }
+    @GetMapping("/recipes/all")
+    public String viewAllRecipes(Model model) {
+        List<Recipe> allRecipes = recipeService.findAllRecipes();
+        model.addAttribute("recipes", allRecipes);
+        model.addAttribute("showAll", true);
+        return "recipes";
     }
 }

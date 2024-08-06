@@ -4,34 +4,46 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Recipes - EasyPeasyRecipes</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css"/>
 </head>
 <body>
-<header th:replace="fragments/nav :: nav"></header>
-<main class="container mt-5">
+<header th:replace="~{fragments/nav :: nav}"></header>
+
+<main class="container mt-5 stix-font">
     <h1 class="text-center">All Recipes</h1>
     <hr class="hr-3 w-25 bg-dark"/>
-    
+
     <div th:if="${successMessage}" class="alert alert-success text-center" id="successMessage">
         <p th:text="${successMessage}"></p>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            <ul>
-                <li th:each="recipe : ${recipes}">
-                    <a th:href="@{/recipe/{id}(id=${recipe.id})}" th:text="${recipe.name}">Recipe Name</a>
-                </li>
-            </ul>
+            <div class="row">
+                <div class="col-md-4" th:each="recipe : ${recipes}">
+                    <div class="card mb-4">
+                        <img class="card-img-top" th:src="${recipe.imageUrl}" alt="Recipe Image">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+                            <a th:href="@{/recipe/{id}(id=${recipe.id})}" class="btn btn-primary">View Recipe</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
-<footer th:replace="fragments/footer :: footer"></footer>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa4gFvPe4pjR8Uu4o8TB8dTqZ" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6Hty5KVphtPhzWj9WO1clHTMGa4GfVPe4pjR8Uu4o8TB8dTqZ" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script th:src="@{/js/hideMessages.js}"></script>
 </body>
 </html>

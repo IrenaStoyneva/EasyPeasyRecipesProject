@@ -6,11 +6,11 @@ import com.softuni.easypeasyrecipes_app.model.entity.Comment;
 import java.util.List;
 
 public interface CommentService {
-    void addComment(Long recipeId, CommentDto commentDto);
+    List<CommentDto> getAllComments();
 
-    List<Comment> findCommentsByRecipeId(Long recipeId);
-
-    List<Comment> findAllComments();
-
+    CommentDto addComment(Long recipeId, CommentDto commentDto);
     void deleteComment(Long id);
+
+
 }
+

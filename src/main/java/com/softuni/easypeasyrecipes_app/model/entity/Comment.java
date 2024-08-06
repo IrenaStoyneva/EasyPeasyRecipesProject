@@ -32,6 +32,7 @@ public class Comment {
     @Transient
     private String formattedDate;
 
+
     public String getFormattedDate() {
         return formattedDate;
     }

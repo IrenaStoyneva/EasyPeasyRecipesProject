@@ -35,19 +35,23 @@
 
     <div class="row mt-5">
         <div class="col-md-8">
-            <div class="rating-section">
-                <form th:action="@{/recipe/{id}/rate(id=${recipe.id})}" th:object="${ratingDto}" method="post">
-                    <div class="star-rating">
-                        <span onclick="gfg(5)" class="star">★</span>
-                        <span onclick="gfg(4)" class="star">★</span>
-                        <span onclick="gfg(3)" class="star">★</span>
-                        <span onclick="gfg(2)" class="star">★</span>
-                        <span onclick="gfg(1)" class="star">★</span>
+            <div class="rating-section d-flex align-items-center">
+                <form th:action="@{/recipe/{id}/rate(id=${recipe.id})}" th:object="${ratingDto}" method="post" id="rating-form">
+                    <div class="star-rating mr-3">
+                        <!-- Добавяне на клас 'selected' към звездите, които трябва да са оцветени -->
+                        <span data-value="5" class="star" th:classappend="${averageRating >= 5} ? 'selected' : ''">★</span>
+                        <span data-value="4" class="star" th:classappend="${averageRating >= 4} ? 'selected' : ''">★</span>
+                        <span data-value="3" class="star" th:classappend="${averageRating >= 3} ? 'selected' : ''">★</span>
+                        <span data-value="2" class="star" th:classappend="${averageRating >= 2} ? 'selected' : ''">★</span>
+                        <span data-value="1" class="star" th:classappend="${averageRating >= 1} ? 'selected' : ''">★</span>
                     </div>
-                    <p class="mt-2"><strong id="average-rating" th:text="${averageRating}">0.0</strong> </p>
-                    <p class="mt-2"><span th:text="${totalVotes}">0</span> votes</p>
+                    <div class="rating-info">
+                        <p class="mb-0">
+                            <strong id="average-rating" th:text="${averageRating}">0.0</strong>
+                        </p>
+                    </div>
                     <input type="hidden" name="value" id="rating-value" th:field="*{value}"/>
-                    <button type="submit" class="btn btn-primary rating-submit">Rate</button>
+                    <button type="submit" class="btn btn-primary rating-submit ml-3">Rate</button>
                 </form>
             </div>
         </div>

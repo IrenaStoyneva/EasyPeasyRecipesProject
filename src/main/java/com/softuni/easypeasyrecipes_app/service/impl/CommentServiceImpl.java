@@ -2,19 +2,25 @@ package com.softuni.easypeasyrecipes_app.service.impl;
 
 
 import com.softuni.easypeasyrecipes_app.model.dto.CommentDto;
-
+import com.softuni.easypeasyrecipes_app.model.entity.Comment;
+import com.softuni.easypeasyrecipes_app.model.entity.User;
+import com.softuni.easypeasyrecipes_app.repository.CommentRepository;
+import com.softuni.easypeasyrecipes_app.repository.UserRepository;
 import com.softuni.easypeasyrecipes_app.service.CommentService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpHeaders;
 
 @Service
 public class CommentServiceImpl implements CommentService {

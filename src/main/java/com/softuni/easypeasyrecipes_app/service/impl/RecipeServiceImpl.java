@@ -1,6 +1,5 @@
 package com.softuni.easypeasyrecipes_app.service.impl;
 
-import com.softuni.easypeasyrecipes_app.config.UserSession;
 import com.softuni.easypeasyrecipes_app.model.dto.AddRecipeDto;
 import com.softuni.easypeasyrecipes_app.model.entity.Category;
 import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
@@ -26,17 +25,15 @@ public class RecipeServiceImpl implements RecipeService {
     private final ModelMapper modelMapper;
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
-    private final UserSession userSession;
     private final CategoryService categoryService;
 
 
 
-    public RecipeServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper, RecipeRepository recipeRepository, UserRepository userRepository, UserSession userSession, CategoryService categoryService) {
+    public RecipeServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper, RecipeRepository recipeRepository, UserRepository userRepository, CategoryService categoryService) {
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
-        this.userSession = userSession;
         this.categoryService = categoryService;
     }
 
@@ -135,6 +132,10 @@ public class RecipeServiceImpl implements RecipeService {
         recipeRepository.deleteAll(oldRecipes);
 
     }
+
+    @Override
+    public List<Recipe> findAllRecipes() {
+        return recipeRepository.findAll();    }
 
 }
 

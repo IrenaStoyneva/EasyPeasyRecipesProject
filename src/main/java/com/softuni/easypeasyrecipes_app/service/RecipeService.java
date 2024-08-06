@@ -36,5 +36,7 @@ public interface RecipeService {
     List<Recipe> findRecipesByCategory(CategoryEnum category);
 
     void deleteOldRecipesWithoutRatings();
+
+    List<Recipe> findAllRecipes();
 }
 

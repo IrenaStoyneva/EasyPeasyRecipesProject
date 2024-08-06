@@ -62,22 +62,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    @Override
-    public boolean login(UserLoginDto userLoginDto) {
-        Optional<User> byUsername = userRepository.findByUsername(userLoginDto.getUsername());
-
-        if (byUsername.isEmpty()) {
-            return false;
-        }
-
-        boolean passMatch = passwordEncoder.matches(userLoginDto.getPassword(), byUsername.get().getPassword());
-
-        if (!passMatch) {
-            return false;
-        }
-
-        return true;
-    }
 
     @Override
     public Optional<User> findById(Long id) {
@@ -90,17 +74,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Проверете дали текущата парола е правилна
         if (!passwordEncoder.matches(changeUsernameDto.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid current password");
         }
 
-        // Проверете дали новото потребителско име е заето
+
         if (userRepository.existsByUsername(changeUsernameDto.getNewUsername())) {
             throw new IllegalArgumentException("Username already taken");
         }
 
-        // Обновете потребителското име
         user.setUsername(changeUsernameDto.getNewUsername());
         userRepository.save(user);
 

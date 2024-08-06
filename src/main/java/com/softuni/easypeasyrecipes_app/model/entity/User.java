@@ -1,8 +1,11 @@
 package com.softuni.easypeasyrecipes_app.model.entity;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.management.relation.Role;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,12 +45,13 @@ public class User {
     )
     private Set<UserRole> roles;
 
-    public User() {
-        this.comments = new HashSet<>();
-        this.ratings = new HashSet<>();
-        this.addedRecipes = new ArrayList<>();
-        this.roles = new HashSet<>();
-    }
+//    public User() {
+//        this.comments = new HashSet<>();
+//        this.ratings = new HashSet<>();
+//        this.addedRecipes = new ArrayList<>();
+//        this.roles = new HashSet<>();
+//    }
+
 
     public Long getId() {
         return id;

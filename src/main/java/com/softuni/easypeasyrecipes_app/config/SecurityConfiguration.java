@@ -1,12 +1,6 @@
 package com.softuni.easypeasyrecipes_app.config;
-import com.softuni.easypeasyrecipes_app.service.impl.UserServiceImpl;
-import jakarta.servlet.Filter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -38,16 +32,22 @@ public class SecurityConfiguration {
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true)
-                        .permitAll()
-                );
+                        .logout(logout -> logout
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
+                                .invalidateHttpSession(true)
+                                .permitAll()
+                        );
+
 
         return http.build();
     }
-
+//
+//    @Bean
+//    public RecipeDetailsServiceImpl userDetailsService(UserRepository userRepository) {
+//        return new RecipeDetailsServiceImpl(userRepository);
+//
+//    }
 
 
     @Bean

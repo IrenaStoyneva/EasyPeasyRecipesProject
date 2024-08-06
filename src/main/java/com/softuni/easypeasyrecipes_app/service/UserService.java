@@ -15,9 +15,6 @@ public interface UserService {
 
     void registerUser(RegisterUserDto registerUserDto);
 
-
-    boolean login(UserLoginDto userLoginDto);
-
     Optional<User> findById(Long id);
 
 

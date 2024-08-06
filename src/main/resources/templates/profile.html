@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 <header th:replace="~{fragments/nav :: nav}"></header>
-<main class="container mt-5">
-    <h1>My Profile</h1>
 
-    <!-- Success and Error messages -->
+<main class="container mt-5 stix-font">
+
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-    <!-- Button to Edit Profile -->
     <div class="d-flex justify-content-end mb-3">
         <a th:href="@{/profile/edit}" class="btn btn-warning">Edit Profile</a>
     </div>
 
-    <!-- My Pending Recipes -->
     <h2>My Pending Recipes</h2>
     <div th:if="${hasPendingRecipes}">
         <div class="row">
@@ -45,7 +45,6 @@
         <p>No recipes waiting for approval.</p>
     </div>
 
-    <!-- My Approved Recipes -->
     <h2>My Approved Recipes</h2>
     <div th:if="${hasApprovedRecipes}">
         <div class="row">
@@ -70,10 +69,12 @@
         <p>You have no recipes yet.</p>
     </div>
 </main>
+
 <footer th:replace="~{fragments/footer :: footer}"></footer>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6Hty5KVphtPhzWj9WO1clHTMGa4GfVPe4pjR8Uu4o8TB8dTqZ" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script th:src="@{/js/hideMessages.js}"></script>
 </body>
 </html>
