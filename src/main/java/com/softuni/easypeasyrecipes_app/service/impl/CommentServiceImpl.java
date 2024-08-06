@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -68,4 +69,27 @@ public class CommentServiceImpl implements CommentService {
                 .body(Void.class);
         logger.info("Deleted comment with ID: {}", id);
     }
+    @Override
+    public CommentDto updateComment(Long id, CommentDto commentDto) {
+        logger.info("Updating comment with ID: {}", id);
+        CommentDto updatedComment = restClient.put()
+                .uri("/api/comments/{id}", id)
+                .body(commentDto)
+                .retrieve()
+                .body(CommentDto.class);
+        logger.info("Updated comment with ID: {}", updatedComment.getId());
+        return updatedComment;
+    }
+
+    @Override
+    public CommentDto getCommentById(Long id) {
+        logger.info("Fetching comment with ID: {}", id);
+        CommentDto commentDto = restClient.get()
+                .uri("/api/comments/{id}", id)
+                .retrieve()
+                .body(CommentDto.class);
+        logger.info("Fetched comment with ID: {}", commentDto.getId());
+        return commentDto;
+    }
+
 }

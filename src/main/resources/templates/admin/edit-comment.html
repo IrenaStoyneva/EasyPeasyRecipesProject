@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Comment</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+<header th:replace="~{fragments/nav :: nav}"></header>
+<main class="container mt-5">
+    <h1 class="text-center mb-4">Edit Comment</h1>
+    <form th:action="@{/admin/comments/edit/{id}(id=${comment.id})}" th:object="${comment}" method="post">
+        <div class="form-group">
+            <label for="content">Content</label>
+            <textarea id="content" th:field="*{content}" class="form-control" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Comment</button>
+        <a th:href="@{/admin/comments}" class="btn btn-secondary">Cancel</a>
+    </form>
+</main>
+<footer th:replace="~{fragments/footer :: footer}" class="mt-5"></footer>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

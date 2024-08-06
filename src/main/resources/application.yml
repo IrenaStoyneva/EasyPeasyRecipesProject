@@ -45,7 +45,7 @@ server:
 
 jwt:
   secret: ${JWT_KEY}
-  expiration: 3666666666666
+  expiration: ${JWT_EXPIRATION:3000000}
 
 comments:
   api:

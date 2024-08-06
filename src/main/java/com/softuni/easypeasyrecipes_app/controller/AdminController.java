@@ -75,6 +75,21 @@ public class AdminController {
         commentService.deleteComment(id);
         return "redirect:/admin/comments";
     }
+    @GetMapping("/comments/edit/{id}")
+    public String showEditCommentForm(@PathVariable Long id, Model model) {
+        CommentDto comment = commentService.getCommentById(id);
+        if (comment == null) {
+            return "redirect:/admin/comments?error=CommentNotFound";
+        }
+        model.addAttribute("comment", comment);
+        return "admin/edit-comment";
+    }
+
+    @PostMapping("/comments/edit/{id}")
+    public String updateComment(@PathVariable Long id, @ModelAttribute("comment") CommentDto commentDto) {
+        commentService.updateComment(id, commentDto);
+        return "redirect:/admin/comments";
+    }
 
     @GetMapping("/recipes")
     public String viewRecipes(Model model) {

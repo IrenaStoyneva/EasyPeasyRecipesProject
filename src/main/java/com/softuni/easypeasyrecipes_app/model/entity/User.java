@@ -1,20 +1,25 @@
 package com.softuni.easypeasyrecipes_app.model.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.descriptor.jdbc.VarcharJdbcType;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.management.relation.Role;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.sql.Types.VARCHAR;
 
 @Entity
 @Table(name = "users")
 public class User {
+    @UUIDSequence
+    @JdbcTypeCode(VARCHAR)
+    private UUID uuid;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -52,6 +57,15 @@ public class User {
 //        this.roles = new HashSet<>();
 //    }
 
+public Set<GrantedAuthority> getAuthorities() {
+    return this.roles.stream()
+            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().name()))
+            .collect(Collectors.toSet());
+}
+
+    public UUID getUuid() {
+        return uuid;
+    }
 
     public Long getId() {
         return id;

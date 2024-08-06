@@ -10,7 +10,8 @@ public interface CommentService {
 
     CommentDto addComment(Long recipeId, CommentDto commentDto);
     void deleteComment(Long id);
+    CommentDto updateComment(Long id, CommentDto commentDto);
 
-
+    CommentDto getCommentById(Long id);
 }
 
