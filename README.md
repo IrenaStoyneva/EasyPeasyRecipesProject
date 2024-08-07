@@ -7,8 +7,8 @@ EasyPeasyRecipes is a web application that allows users to browse, create, and s
 
 ## Technologies Used
 
-- Java 17
-- Spring Boot 2.x
+- Java 22
+- Spring Boot 
 - Spring Security
 - Hibernate
 - Thymeleaf
@@ -19,7 +19,7 @@ EasyPeasyRecipes is a web application that allows users to browse, create, and s
 
 Before you begin, ensure you have met the following requirements:
 
-- Java 17 or later installed
+- Java 21 or later installed
 - MySQL database running
 - Maven installed
 
