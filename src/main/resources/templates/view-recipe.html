@@ -38,7 +38,6 @@
             <div class="rating-section d-flex align-items-center">
                 <form th:action="@{/recipe/{id}/rate(id=${recipe.id})}" th:object="${ratingDto}" method="post" id="rating-form">
                     <div class="star-rating mr-3">
-                        <!-- Добавяне на клас 'selected' към звездите, които трябва да са оцветени -->
                         <span data-value="5" class="star" th:classappend="${averageRating >= 5} ? 'selected' : ''">★</span>
                         <span data-value="4" class="star" th:classappend="${averageRating >= 4} ? 'selected' : ''">★</span>
                         <span data-value="3" class="star" th:classappend="${averageRating >= 3} ? 'selected' : ''">★</span>
@@ -73,16 +72,27 @@
         <div class="col-md-8">
             <h2>Comments</h2>
             <div th:each="comment : ${comments}">
-                <p><strong th:text="${comment.author.username}">Username</strong>: <span th:text="${comment.content}">Comment content</span></p>
-                <p><small th:text="${comment.formattedDate}">Comment date</small></p>
+                <p>
+                    <strong th:text="${comment.author.username}">Username</strong>:
+                    <span th:text="${comment.content}">Comment content</span>
+                </p>
+                <p>
+                    <small th:text="${comment.formattedDate}">Comment date</small>
+                </p>
+                <div th:if="${#authentication.principal.username == comment.author.username || #authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    <form th:action="@{/api/comments/{id}(id=${comment.id})}" method="post" style="display: inline;">
+                        <input type="hidden" name="_method" value="delete" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </div>
                 <hr/>
             </div>
         </div>
     </div>
 </main>
 <footer th:replace="~{fragments/footer :: footer}"></footer>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="/js/rating.js"></script>
 </body>

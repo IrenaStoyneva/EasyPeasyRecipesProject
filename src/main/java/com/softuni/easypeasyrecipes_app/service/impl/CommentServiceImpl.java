@@ -27,11 +27,12 @@ import org.springframework.http.HttpHeaders;
 public class CommentServiceImpl implements CommentService {
 
     private static final Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
-
+    private CommentRepository commentRepository;
     private final RestClient restClient;
     private final ModelMapper modelMapper;
 
-    public CommentServiceImpl(@Qualifier("commentsRestClient") RestClient restClient, ModelMapper modelMapper) {
+    public CommentServiceImpl(CommentRepository commentRepository, @Qualifier("commentsRestClient") RestClient restClient, ModelMapper modelMapper) {
+        this.commentRepository = commentRepository;
         this.restClient = restClient;
         this.modelMapper = modelMapper;
     }
@@ -56,29 +57,23 @@ public class CommentServiceImpl implements CommentService {
                 .body(commentDto)
                 .retrieve()
                 .body(CommentDto.class);
-        logger.info("Added comment with ID: {}", savedComment.getId());
         return savedComment;
     }
 
     @Override
     public void deleteComment(Long id) {
-        logger.info("Deleting comment with ID: {}", id);
         restClient.delete()
                 .uri("/api/comments/{id}", id)
                 .retrieve()
                 .body(Void.class);
-        logger.info("Deleted comment with ID: {}", id);
     }
     @Override
     public CommentDto updateComment(Long id, CommentDto commentDto) {
-        logger.info("Updating comment with ID: {}", id);
-        CommentDto updatedComment = restClient.put()
+        return restClient.put()
                 .uri("/api/comments/{id}", id)
                 .body(commentDto)
                 .retrieve()
                 .body(CommentDto.class);
-        logger.info("Updated comment with ID: {}", updatedComment.getId());
-        return updatedComment;
     }
 
     @Override
@@ -92,4 +87,10 @@ public class CommentServiceImpl implements CommentService {
         return commentDto;
     }
 
+    @Override
+    public Long getRecipeIdByCommentId(Long id) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+        return comment.getRecipe().getId();
+    }
 }
