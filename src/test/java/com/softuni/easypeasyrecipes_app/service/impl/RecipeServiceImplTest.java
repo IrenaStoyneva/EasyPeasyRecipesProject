@@ -15,10 +15,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class RecipeServiceImplUnitTest {
+public class RecipeServiceImplTest {
     @Mock
     private RecipeRepository recipeRepository;
 
@@ -50,14 +50,19 @@ public class RecipeServiceImplUnitTest {
     @Captor
     private ArgumentCaptor<Recipe> recipeCaptor;
 
+    @Captor
+    private ArgumentCaptor<LocalDateTime> dateTimeCaptor;
+
+    private User testUser;
+    private Category testCategory;
+
     @BeforeEach
     public void setUp() {
-
-        User testUser = new User();
+        testUser = new User();
         testUser.setId(1L);
         testUser.setUsername("testuser");
 
-        Category testCategory = new Category();
+        testCategory = new Category();
         testCategory.setName(CategoryEnum.Dessert);
     }
 
@@ -79,6 +84,57 @@ public class RecipeServiceImplUnitTest {
     }
 
     @Test
+    public void testCreateRecipeUserNotFound() {
+        AddRecipeDto recipeDto = new AddRecipeDto();
+        recipeDto.setName("Test Recipe");
+        recipeDto.setDescription("Test description");
+        recipeDto.setIngredients("Test ingredients");
+        recipeDto.setCategory(CategoryEnum.Lunch);
+
+        String imageUrl = "http://example.com/image.jpg";
+
+        Recipe recipe = new Recipe();
+        when(categoryRepository.findByName(CategoryEnum.Lunch)).thenReturn(Optional.of(testCategory));
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        when(modelMapper.map(recipeDto, Recipe.class)).thenReturn(recipe);
+
+        assertThrows(IllegalArgumentException.class, () -> recipeService.create(recipeDto, imageUrl, 1L));
+
+        verify(recipeRepository, never()).save(any(Recipe.class));
+    }
+
+    @Test
+    public void testCreateRecipeSuccess() {
+        AddRecipeDto recipeDto = new AddRecipeDto();
+        recipeDto.setName("Test Recipe");
+        recipeDto.setDescription("Test description");
+        recipeDto.setIngredients("Test ingredients");
+        recipeDto.setCategory(CategoryEnum.Lunch);
+
+        String imageUrl = "http://example.com/image.jpg";
+        Recipe recipe = new Recipe();
+        recipe.setId(1L);
+        recipe.setName("Test Recipe");
+        recipe.setDescription("Test description");
+        recipe.setIngredients("Test ingredients");
+        recipe.setCategory(testCategory);
+        recipe.setAddedBy(testUser);
+        recipe.setImageUrl(imageUrl);
+
+        when(categoryRepository.findByName(CategoryEnum.Lunch)).thenReturn(Optional.of(testCategory));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(modelMapper.map(recipeDto, Recipe.class)).thenReturn(recipe);
+        when(recipeRepository.save(any(Recipe.class))).thenReturn(recipe);
+
+        recipeService.create(recipeDto, imageUrl, 1L);
+
+        verify(recipeRepository).save(recipeCaptor.capture());
+        Recipe savedRecipe = recipeCaptor.getValue();
+        assertEquals(recipeDto.getName(), savedRecipe.getName());
+        assertEquals(imageUrl, savedRecipe.getImageUrl());
+    }
+
+    @Test
     public void testSearchRecipesByName() {
         Recipe recipe1 = new Recipe();
         recipe1.setName("Apple Pie");
@@ -90,6 +146,7 @@ public class RecipeServiceImplUnitTest {
         assertEquals(1, recipes.size(), "Expected one recipe to be found");
         assertEquals("Apple Pie", recipes.get(0).getName(), "Expected recipe name to be 'Apple Pie'");
     }
+
     @Test
     public void testGetRecentRecipes() {
         Recipe recipe1 = new Recipe();
@@ -104,7 +161,6 @@ public class RecipeServiceImplUnitTest {
 
     @Test
     public void testFindByIdRecipeExists() {
-
         Recipe recipe = new Recipe();
         recipe.setId(1L);
         recipe.setName("Test Recipe");
@@ -150,7 +206,6 @@ public class RecipeServiceImplUnitTest {
 
     @Test
     public void testGetAllRecipes() {
-
         Recipe recipe1 = new Recipe();
         Recipe recipe2 = new Recipe();
 
@@ -162,6 +217,7 @@ public class RecipeServiceImplUnitTest {
         assertTrue(recipes.contains(recipe1));
         assertTrue(recipes.contains(recipe2));
     }
+
     @Test
     public void testApproveRecipe() {
         Long recipeId = 1L;
@@ -169,16 +225,11 @@ public class RecipeServiceImplUnitTest {
         recipe.setId(recipeId);
         recipe.setApproved(false);
 
-        // Мокирайте поведението на recipeRepository
         when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(recipe));
 
-        // Извикайте метода на сървиса
         recipeService.approveRecipe(recipeId);
 
-        // Проверете дали рецептата е одобрена
         assertTrue(recipe.isApproved());
-
-        // Проверете дали рецептата е запазена
         verify(recipeRepository, times(1)).save(recipe);
     }
 
@@ -186,43 +237,111 @@ public class RecipeServiceImplUnitTest {
     public void testApproveRecipeNotFound() {
         Long recipeId = 1L;
 
-        // Мокирайте поведението на recipeRepository
         when(recipeRepository.findById(recipeId)).thenReturn(Optional.empty());
 
-        // Проверете дали се хвърля изключение
-        assertThrows(IllegalArgumentException.class, () -> {
-            recipeService.approveRecipe(recipeId);
-        });
+        assertThrows(IllegalArgumentException.class, () -> recipeService.approveRecipe(recipeId));
     }
+
     @Test
     public void testFindApprovedRecipes() {
         Recipe recipe1 = new Recipe();
         recipe1.setApproved(true);
 
-        // Мокирайте поведението на recipeRepository
         when(recipeRepository.findByApprovedTrue()).thenReturn(List.of(recipe1));
 
-        // Извикайте метода на сървиса
         List<Recipe> approvedRecipes = recipeService.findApprovedRecipes();
 
-        // Проверете резултатите
         assertEquals(1, approvedRecipes.size());
         assertTrue(approvedRecipes.get(0).isApproved());
     }
+
     @Test
     public void testFindApprovedByUserId() {
         Long userId = 1L;
         Recipe recipe1 = new Recipe();
         recipe1.setApproved(true);
 
-        // Мокирайте поведението на recipeRepository
         when(recipeRepository.findByAddedByIdAndApprovedTrue(userId)).thenReturn(List.of(recipe1));
 
-        // Извикайте метода на сървиса
         List<Recipe> approvedRecipes = recipeService.findApprovedByUserId(userId);
 
-        // Проверете резултатите
         assertEquals(1, approvedRecipes.size());
         assertTrue(approvedRecipes.get(0).isApproved());
+    }
+
+    @Test
+    public void testFindRecipesByCategory() {
+        CategoryEnum categoryEnum = CategoryEnum.Dessert;
+        Category category = new Category();
+        category.setName(categoryEnum);
+
+        Recipe recipe1 = new Recipe();
+        recipe1.setCategory(category);
+
+        when(categoryService.findByName(categoryEnum)).thenReturn(category);
+        when(recipeRepository.findByCategory(category)).thenReturn(List.of(recipe1));
+
+        List<Recipe> recipes = recipeService.findRecipesByCategory(categoryEnum);
+
+        assertEquals(1, recipes.size());
+        assertEquals(categoryEnum, recipes.get(0).getCategory().getName());
+    }
+
+    @Test
+    public void testDeleteOldRecipesWithoutRatings() {
+        Recipe recipe1 = new Recipe();
+        Recipe recipe2 = new Recipe();
+
+        LocalDateTime oneYearAgo = LocalDateTime.now().minusYears(1);
+        when(recipeRepository.findRecipesWithoutRatingOlderThan(any(LocalDateTime.class))).thenReturn(List.of(recipe1, recipe2));
+
+        recipeService.deleteOldRecipesWithoutRatings();
+
+        verify(recipeRepository, times(1)).deleteAll(List.of(recipe1, recipe2));
+    }
+    @Test
+    public void testFindByUserId() {
+        Long userId = 1L;
+        Recipe recipe1 = new Recipe();
+        recipe1.setAddedBy(testUser);
+
+        when(recipeRepository.findByAddedBy_Id(userId)).thenReturn(List.of(recipe1));
+
+        List<Recipe> recipes = recipeService.findByUserId(userId);
+
+        assertEquals(1, recipes.size());
+        assertEquals(testUser, recipes.get(0).getAddedBy());
+    }
+    @Test
+    public void testFindPendingByUserId() {
+        Long userId = 1L;
+        Recipe recipe1 = new Recipe();
+        recipe1.setApproved(false);
+
+        when(recipeRepository.findByAddedByIdAndApprovedFalse(userId)).thenReturn(List.of(recipe1));
+
+        List<Recipe> pendingRecipes = recipeService.findPendingByUserId(userId);
+
+        assertEquals(1, pendingRecipes.size());
+        assertFalse(pendingRecipes.get(0).isApproved());
+    }
+    @Test
+    public void testFindAllRecipes() {
+        Recipe recipe1 = new Recipe();
+        recipe1.setName("Recipe 1");
+
+        Recipe recipe2 = new Recipe();
+        recipe2.setName("Recipe 2");
+
+        when(recipeRepository.findAll()).thenReturn(List.of(recipe1, recipe2));
+
+        List<Recipe> recipes = recipeService.findAllRecipes();
+
+        assertEquals(2, recipes.size(), "Expected to find 2 recipes");
+
+        assertTrue(recipes.contains(recipe1), "Expected to find Recipe 1");
+        assertTrue(recipes.contains(recipe2), "Expected to find Recipe 2");
+
+        verify(recipeRepository, times(1)).findAll();
     }
 }

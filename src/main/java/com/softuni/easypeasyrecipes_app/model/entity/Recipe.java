@@ -51,6 +51,17 @@ public class Recipe {
     @Column(nullable = false)
     private boolean approved;
 
+    public Recipe() {
+    }
+
+    public Recipe(String name, String description, String ingredients, String instructions, String imageUrl) {
+        this.name = name;
+        this.description = description;
+        this.ingredients = ingredients;
+        this.instructions = instructions;
+        this.imageUrl = imageUrl;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }

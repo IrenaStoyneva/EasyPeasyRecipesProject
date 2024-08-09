@@ -13,6 +13,17 @@ public class CommentDto {
     private Long authorId;
     private Long recipeId;
 
+    public CommentDto(Long id, @NotBlank String content, LocalDateTime createdOn, Long authorId, Long recipeId) {
+        this.id = id;
+        this.content = content;
+        this.createdOn = createdOn;
+        this.authorId = authorId;
+        this.recipeId = recipeId;
+    }
+
+    public CommentDto() {
+    }
+
     public Long getId() {
         return id;
     }

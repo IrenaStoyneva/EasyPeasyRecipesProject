@@ -3,6 +3,8 @@ package com.softuni.easypeasyrecipes_app.model.entity;
 import com.softuni.easypeasyrecipes_app.model.enums.RoleEnum;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "roles")
 public class UserRole {
@@ -38,7 +40,18 @@ public class UserRole {
         return this.role.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRole userRole = (UserRole) o;
+        return role == userRole.role;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, role);
+    }
 }
 
 

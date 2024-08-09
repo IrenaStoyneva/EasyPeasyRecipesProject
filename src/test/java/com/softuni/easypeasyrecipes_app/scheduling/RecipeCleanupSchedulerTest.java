@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
-@TestPropertySource(locations = "classpath:application-test.yml")
+//@TestPropertySource(locations = "classpath:application-test.yml")
 public class RecipeCleanupSchedulerTest {
 
     @Autowired
@@ -65,9 +65,9 @@ public class RecipeCleanupSchedulerTest {
         recipeCleanupScheduler.deleteOldRecipesWithoutRatings();
 
         Optional<Recipe> oldRecipe = recipeRepository.findByName("Old Recipe");
-        assertTrue(oldRecipe.isEmpty(), "Старата рецепта без рейтинг трябва да бъде изтрита.");
+        assertTrue(oldRecipe.isEmpty(), "The old recipe without rating should be deleted.");
 
         Optional<Recipe> newRecipe = recipeRepository.findByName("New Recipe with Rating");
-        assertTrue(newRecipe.isPresent(), "Новата рецепта с рейтинг трябва да остане.");
+        assertTrue(newRecipe.isPresent(), "The new recipe with rating should remain.");
     }
 }

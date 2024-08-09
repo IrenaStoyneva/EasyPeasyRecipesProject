@@ -1,6 +1,9 @@
 package com.softuni.easypeasyrecipes_app.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,6 +15,7 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
 
@@ -42,13 +46,6 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-//
-//    @Bean
-//    public RecipeDetailsServiceImpl userDetailsService(UserRepository userRepository) {
-//        return new RecipeDetailsServiceImpl(userRepository);
-//
-//    }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -59,5 +56,8 @@ public class SecurityConfiguration {
         return new HiddenHttpMethodFilter();
     }
 
-
+    @Bean
+    public MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
+        return new DefaultMethodSecurityExpressionHandler();
+    }
 }

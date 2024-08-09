@@ -50,12 +50,6 @@ public class User {
     )
     private Set<UserRole> roles;
 
-//    public User() {
-//        this.comments = new HashSet<>();
-//        this.ratings = new HashSet<>();
-//        this.addedRecipes = new ArrayList<>();
-//        this.roles = new HashSet<>();
-//    }
 
 public Set<GrantedAuthority> getAuthorities() {
     return this.roles.stream()

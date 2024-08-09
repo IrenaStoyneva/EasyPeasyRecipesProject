@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -123,17 +125,23 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+
     @Override
     public void updateUserRoles(Long userId, Set<RoleEnum> roles) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        Set<UserRole> currentRoles = user.getRoles();
+
         Set<UserRole> userRoles = roles.stream()
                 .map(roleEnum -> userRoleRepository.findByRole(roleEnum)
-                        .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleEnum)))
+                        .orElseThrow(() -> new IllegalArgumentException(STR."Role not found: \{roleEnum}")))
                 .collect(Collectors.toSet());
 
-        user.setRoles(userRoles);
+        currentRoles.addAll(userRoles);
+
+        user.setRoles(currentRoles);
+
         userRepository.save(user);
     }
 
@@ -145,9 +153,9 @@ public class UserServiceImpl implements UserService {
     }
 
     public Optional<User> getCurrentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            String username = ((UserDetails) principal).getUsername();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            String username = ((UserDetails) authentication.getPrincipal()).getUsername();
             return userRepository.findByUsername(username);
         } else {
             return Optional.empty();
@@ -156,7 +164,7 @@ public class UserServiceImpl implements UserService {
 
     public List<String> getUserRoles(User user) {
         return user.getRoles().stream()
-                .map(role -> "ROLE_" + role.getRole().name())
+                .map(role -> STR."ROLE_\{role.getRole().name()}")
                 .collect(Collectors.toList());
     }
 
