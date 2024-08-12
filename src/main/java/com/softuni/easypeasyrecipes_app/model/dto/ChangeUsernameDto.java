@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 public class ChangeUsernameDto {
     @NotEmpty(message = "New username cannot be empty.")
     @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters.")
-    @UniqueUsername(message = "This username is already taken.")
+    @UniqueUsername
     private String newUsername;
 
     @NotEmpty(message = "Current password cannot be empty.")

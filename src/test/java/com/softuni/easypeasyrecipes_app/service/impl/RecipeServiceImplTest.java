@@ -8,6 +8,7 @@ import com.softuni.easypeasyrecipes_app.repository.CategoryRepository;
 import com.softuni.easypeasyrecipes_app.repository.RecipeRepository;
 import com.softuni.easypeasyrecipes_app.repository.UserRepository;
 import com.softuni.easypeasyrecipes_app.service.CategoryService;
+import com.softuni.easypeasyrecipes_app.service.RatingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,7 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +42,9 @@ public class RecipeServiceImplTest {
 
     @Mock
     private ModelMapper modelMapper;
+
+    @Mock
+    private RatingService ratingService;
 
     @Mock
     private CategoryService categoryService;
@@ -343,5 +348,45 @@ public class RecipeServiceImplTest {
         assertTrue(recipes.contains(recipe2), "Expected to find Recipe 2");
 
         verify(recipeRepository, times(1)).findAll();
+    }
+    @Test
+    void testGetTopRecipesByRating() {
+        Recipe recipe1 = new Recipe();
+        recipe1.setId(1L);
+        Recipe recipe2 = new Recipe();
+        recipe2.setId(2L);
+
+        when(recipeRepository.findAll()).thenReturn(List.of(recipe1, recipe2));
+        when(ratingService.calculateAverageRating(1L)).thenReturn(4.5);
+        when(ratingService.calculateAverageRating(2L)).thenReturn(3.5);
+
+        List<Recipe> topRecipes = recipeService.getTopRecipesByRating(1);
+
+        assertEquals(1, topRecipes.size());
+        assertEquals(recipe1.getId(), topRecipes.get(0).getId());
+    }
+    @Test
+    void testGetRecipesCountByCategory() {
+        Category category1 = new Category();
+        category1.setName(CategoryEnum.Dessert);
+
+        Category category2 = new Category();
+        category2.setName(CategoryEnum.Dinner);
+
+        Recipe recipe1 = new Recipe();
+        recipe1.setCategory(category1);
+
+        Recipe recipe2 = new Recipe();
+        recipe2.setCategory(category1);
+
+        Recipe recipe3 = new Recipe();
+        recipe3.setCategory(category2);
+
+        when(recipeRepository.findAll()).thenReturn(List.of(recipe1, recipe2, recipe3));
+
+        Map<String, Long> recipesCountByCategory = recipeService.getRecipesCountByCategory();
+
+        assertEquals(2, recipesCountByCategory.get("Dessert"));
+        assertEquals(1, recipesCountByCategory.get("Dinner"));
     }
 }

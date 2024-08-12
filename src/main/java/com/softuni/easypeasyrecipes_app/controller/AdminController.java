@@ -13,11 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -40,11 +38,6 @@ public class AdminController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping
-    public String adminHome() {
-        return "admin/index";
-    }
-
     @GetMapping("/users")
     public String viewUsers(Model model) {
         List<User> users = userService.findAllUsers();
@@ -61,7 +54,11 @@ public class AdminController {
     }
 
     @GetMapping("/comments")
-    public String viewComments(Model model) {
+    public String viewComments(Model model, @RequestParam(value = "error", required = false) String error) {
+        if (error != null) {
+            model.addAttribute("errorMessage", "Comment not found.");
+        }
+
         List<CommentDto> commentDtos = commentService.getAllComments();
         List<Comment> comments = commentDtos.stream()
                 .map(commentDto -> modelMapper.map(commentDto, Comment.class))
@@ -75,6 +72,7 @@ public class AdminController {
         commentService.deleteComment(id);
         return "redirect:/admin/comments";
     }
+
     @GetMapping("/comments/edit/{id}")
     public String showEditCommentForm(@PathVariable Long id, Model model) {
         CommentDto comment = commentService.getCommentById(id);
@@ -110,52 +108,38 @@ public class AdminController {
         return "redirect:/admin/recipes";
     }
 
-    @GetMapping("/categories")
-    public String viewCategories(Model model) {
-        List<Category> categories = categoryService.findAll();
-        model.addAttribute("categories", categories);
-        return "admin/categories";
-    }
-
-    @GetMapping("/categories/add")
-    public String showAddCategoryForm(Model model) {
-        model.addAttribute("category", new Category());
-        return "admin/add-category";
-    }
-
-    @PostMapping("/categories/add")
-    public String addCategory(@ModelAttribute Category category) {
-        categoryService.save(category);
-        return "redirect:/admin/categories";
-    }
-
-    @GetMapping("/categories/edit/{id}")
-    public String showEditCategoryForm(@PathVariable Long id, Model model) {
-        Optional<Category> optionalCategory = categoryService.findById(id);
-        if (optionalCategory.isPresent()) {
-            Category category = optionalCategory.get();
-            model.addAttribute("category", category);
-            return "admin/edit-category";
-        } else {
-            return "redirect:/admin/categories";
-        }
-    }
-
-    @PostMapping("/categories/edit")
-    public String editCategory(@ModelAttribute Category category) {
-        categoryService.save(category);
-        return "redirect:/admin/categories";
-    }
-
-    @PostMapping("/categories/delete/{id}")
-    public String deleteCategory(@PathVariable Long id) {
-        categoryService.delete(id);
-        return "redirect:/admin/categories";
-    }
-
     @PostMapping("/users/{id}/roles")
-    public String updateUserRoles(@PathVariable Long id, @RequestParam("roles") Set<RoleEnum> roles) {
+    public String updateUserRoles(@PathVariable Long id, @RequestParam("roles") Set<RoleEnum> roles, RedirectAttributes redirectAttributes) {
         userService.updateUserRoles(id, roles);
+        redirectAttributes.addFlashAttribute("successMessage", "Roles updated successfully!");
         return "redirect:/admin/users";
     }
+    @PostMapping("/users/remove-role/{id}")
+    public String removeUserRole(@PathVariable Long id, @RequestParam String roleToRemove, RedirectAttributes redirectAttributes) {
+        userService.removeUserRole(id, RoleEnum.valueOf(roleToRemove));
+        redirectAttributes.addFlashAttribute("successMessage", "Role removed successfully!");
+        return "redirect:/admin/users";
+    }
+    @GetMapping("/statistics")
+    public String viewStatistics(Model model) {
+        long userCount = userService.countUsers();
+        long recipeCount = recipeService.countRecipes();
+        long commentCount = commentService.countComments();
+        List<Recipe> topRecipes = recipeService.getTopRecipesByRating(5);
+
+        Map<String, Long> recipesByCategory = recipeService.getRecipesCountByCategory();
+        List<String> categoryNames = new ArrayList<>(recipesByCategory.keySet());
+        List<Long> categoryCounts = new ArrayList<>(recipesByCategory.values());
+
+        model.addAttribute("userCount", userCount);
+        model.addAttribute("recipeCount", recipeCount);
+        model.addAttribute("commentCount", commentCount);
+        model.addAttribute("topRecipes", topRecipes);
+        model.addAttribute("categoryNames", categoryNames);
+        model.addAttribute("categoryCounts", categoryCounts);
+
+        return "admin/statistics";
+    }
+
+
 }

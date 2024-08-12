@@ -1,6 +1,5 @@
 package com.softuni.easypeasyrecipes_app.aop;
 
-import com.softuni.easypeasyrecipes_app.init.DataInitializer;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -12,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Aspect
 @Configuration
 public class StartSeedDB {
-    private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
+    private static final Logger log = LoggerFactory.getLogger(StartSeedDB.class);
 
     @Pointcut("execution(* com.softuni.easypeasyrecipes_app.init.DataInitializer.run(..))")
     void dataInitializer() {

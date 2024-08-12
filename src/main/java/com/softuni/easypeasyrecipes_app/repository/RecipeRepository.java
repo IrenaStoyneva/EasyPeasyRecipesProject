@@ -38,4 +38,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findRecipesWithoutRatingOlderThan(@Param("oneYearAgo") LocalDateTime oneYearAgo);
 
     Optional<Recipe> findByName(String oldRecipe);
+
+    @Query("SELECT r.category.name, COUNT(r) FROM Recipe r GROUP BY r.category.name")
+    List<Object[]> countRecipesByCategory();
 }

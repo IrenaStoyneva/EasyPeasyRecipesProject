@@ -20,6 +20,7 @@ public class User {
     @UUIDSequence
     @JdbcTypeCode(VARCHAR)
     private UUID uuid;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,14 +49,13 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<UserRole> roles;
+    private Set<UserRole> roles = new HashSet<>();
 
-
-public Set<GrantedAuthority> getAuthorities() {
-    return this.roles.stream()
-            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().name()))
-            .collect(Collectors.toSet());
-}
+    public Set<GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().name()))
+                .collect(Collectors.toSet());
+    }
 
     public UUID getUuid() {
         return uuid;
@@ -124,14 +124,5 @@ public Set<GrantedAuthority> getAuthorities() {
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
     }
-
-    public void addRole(UserRole role) {
-        this.roles.add(role);
-    }
-
-    public void setRole(UserRole userRole) {
-        this.roles.add(userRole);
-    }
-
 
 }

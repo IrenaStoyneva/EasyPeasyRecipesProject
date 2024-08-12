@@ -2,10 +2,7 @@ package com.softuni.easypeasyrecipes_app.web;
 
 import com.softuni.easypeasyrecipes_app.controller.AdminController;
 import com.softuni.easypeasyrecipes_app.model.dto.CommentDto;
-import com.softuni.easypeasyrecipes_app.model.entity.Category;
-import com.softuni.easypeasyrecipes_app.model.entity.Comment;
-import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
-import com.softuni.easypeasyrecipes_app.model.entity.User;
+import com.softuni.easypeasyrecipes_app.model.entity.*;
 import com.softuni.easypeasyrecipes_app.model.enums.RoleEnum;
 import com.softuni.easypeasyrecipes_app.repository.UserRoleRepository;
 import com.softuni.easypeasyrecipes_app.service.CategoryService;
@@ -23,10 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,13 +54,6 @@ class AdminControllerITTest {
 
     @MockBean
     private ModelMapper modelMapper;
-
-    @Test
-    void testAdminHome() throws Exception {
-        mockMvc.perform(get("/admin"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("admin/index"));
-    }
 
     @Test
     void testViewUsers() throws Exception {
@@ -185,63 +172,6 @@ class AdminControllerITTest {
     }
 
     @Test
-    void testViewCategories() throws Exception {
-        when(categoryService.findAll()).thenReturn(Collections.singletonList(new Category()));
-
-        mockMvc.perform(get("/admin/categories"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("categories"))
-                .andExpect(view().name("admin/categories"));
-    }
-
-    @Test
-    void testShowAddCategoryForm() throws Exception {
-        mockMvc.perform(get("/admin/categories/add"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("category"))
-                .andExpect(view().name("admin/add-category"));
-    }
-
-    @Test
-    void testAddCategory() throws Exception {
-        doNothing().when(categoryService).save(new Category());
-
-        mockMvc.perform(post("/admin/categories/add")
-                        .flashAttr("category", new Category()))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/admin/categories"));
-    }
-
-    @Test
-    void testShowEditCategoryForm() throws Exception {
-        when(categoryService.findById(1L)).thenReturn(Optional.of(new Category()));
-
-        mockMvc.perform(get("/admin/categories/edit/{id}", 1L))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("category"))
-                .andExpect(view().name("admin/edit-category"));
-    }
-
-    @Test
-    void testEditCategory() throws Exception {
-        doNothing().when(categoryService).save(new Category());
-
-        mockMvc.perform(post("/admin/categories/edit")
-                        .flashAttr("category", new Category()))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/admin/categories"));
-    }
-
-    @Test
-    void testDeleteCategory() throws Exception {
-        doNothing().when(categoryService).delete(1L);
-
-        mockMvc.perform(post("/admin/categories/delete/{id}", 1L))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/admin/categories"));
-    }
-
-    @Test
     void testUpdateUserRoles() throws Exception {
         doNothing().when(userService).updateUserRoles(1L, Set.of(RoleEnum.ADMIN));
 
@@ -250,4 +180,49 @@ class AdminControllerITTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/admin/users"));
     }
+    @Test
+    void testViewStatistics() throws Exception {
+
+        when(userService.countUsers()).thenReturn(10L);
+        when(recipeService.countRecipes()).thenReturn(5L);
+        when(commentService.countComments()).thenReturn(20L);
+
+        Recipe recipe = new Recipe();
+        recipe.setName("Test Recipe");
+
+        Rating rating1 = new Rating();
+        rating1.setValue(4);
+        Rating rating2 = new Rating();
+        rating2.setValue(5);
+
+        recipe.setRatings(Set.of(rating1, rating2));
+
+        when(recipeService.getTopRecipesByRating(5)).thenReturn(List.of(recipe));
+
+        Map<String, Long> recipesByCategory = Map.of(
+                "Dessert", 3L,
+                "Dinner", 2L
+        );
+        when(recipeService.getRecipesCountByCategory()).thenReturn(recipesByCategory);
+
+        mockMvc.perform(get("/admin/statistics"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/statistics"))
+                .andExpect(model().attribute("userCount", 10L))
+                .andExpect(model().attribute("recipeCount", 5L))
+                .andExpect(model().attribute("commentCount", 20L))
+                .andExpect(model().attribute("topRecipes", hasSize(1)))
+                .andExpect(model().attribute("topRecipes", hasItem(
+                        allOf(
+                                hasProperty("name", is("Test Recipe")),
+                                hasProperty("averageRating", is(4.5)),
+                                hasProperty("totalVotes", is(2))
+                        )
+                )))
+                .andExpect(model().attribute("categoryNames", hasSize(2)))
+                .andExpect(model().attribute("categoryNames", containsInAnyOrder("Dessert", "Dinner")))
+                .andExpect(model().attribute("categoryCounts", hasSize(2)))
+                .andExpect(model().attribute("categoryCounts", containsInAnyOrder(3L, 2L)));
+    }
+
 }

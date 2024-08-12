@@ -93,4 +93,8 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
         return comment.getRecipe().getId();
     }
+    @Override
+    public long countComments() {
+        return commentRepository.count();
+    }
 }

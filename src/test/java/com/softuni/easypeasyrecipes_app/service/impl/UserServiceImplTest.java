@@ -327,4 +327,85 @@ public class UserServiceImplTest {
 
         assertEquals(0, roles.size());
     }
+    @Test
+    public void testRegisterUserSuccess() {
+        when(userRepository.findByUsernameOrEmail(registerUserDto.getUsername(), registerUserDto.getEmail())).thenReturn(Optional.empty());
+
+        UserRole userRole = new UserRole();
+        userRole.setRole(RoleEnum.USER);
+        when(userRoleRepository.findByRole(RoleEnum.USER)).thenReturn(Optional.of(userRole));
+
+        User user = new User();
+        when(modelMapper.map(registerUserDto, User.class)).thenReturn(user);
+        when(passwordEncoder.encode(registerUserDto.getPassword())).thenReturn("encodedPassword");
+
+        userService.registerUser(registerUserDto);
+
+        verify(userRepository, times(1)).save(user);
+        assertEquals("encodedPassword", user.getPassword());
+        assertTrue(user.getRoles().contains(userRole));
+    }
+    @Test
+    public void testChangeUsernameInvalidPassword() {
+        User user = new User();
+        user.setUsername("testuser");
+        user.setPassword("encodedpassword");
+
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(changeUsernameDto.getCurrentPassword(), user.getPassword())).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class, () -> userService.changeUsername("testuser", changeUsernameDto));
+
+        verify(userRepository, never()).save(any(User.class));
+    }
+    @Test
+    public void testChangePasswordInvalidCurrentPassword() {
+        User user = new User();
+        user.setUsername("testuser");
+        user.setPassword("encodedpassword");
+
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(changePasswordDto.getCurrentPassword(), user.getPassword())).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class, () -> userService.changePassword("testuser", changePasswordDto));
+
+        verify(userRepository, never()).save(any(User.class));
+    }
+    @Test
+    public void testCountUsers() {
+        when(userRepository.count()).thenReturn(5L);
+
+        long userCount = userService.countUsers();
+
+        assertEquals(5L, userCount);
+        verify(userRepository, times(1)).count();
+    }
+    @Test
+    public void testFindUserIdByUsername_UserNotFound() {
+        when(userRepository.findByUsername("nonexistentuser")).thenReturn(Optional.empty());
+
+        assertThrows(UsernameNotFoundException.class, () -> userService.findUserIdByUsername("nonexistentuser"));
+    }
+    @Test
+    public void testGetCurrentUser_UserNotFoundInDatabase() {
+        UserDetails userDetails = org.springframework.security.core.userdetails.User
+                .withUsername("testuser")
+                .password("password")
+                .authorities(new ArrayList<>())
+                .build();
+
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+
+        SecurityContextHolder.setContext(securityContext);
+
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        Optional<User> currentUser = userService.getCurrentUser();
+
+        assertFalse(currentUser.isPresent());
+    }
 }

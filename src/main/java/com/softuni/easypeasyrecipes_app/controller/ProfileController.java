@@ -81,11 +81,10 @@ public class ProfileController {
 
     @PostMapping("/change-username")
     public String changeUsername(@Valid @ModelAttribute("changeUsernameDto") ChangeUsernameDto changeUsernameDto,
-                                 BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+                                 BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.changeUsernameDto", bindingResult);
-            redirectAttributes.addFlashAttribute("changeUsernameDto", changeUsernameDto);
-            return "redirect:/profile/edit";
+            model.addAttribute("changePasswordDto", new ChangePasswordDto());
+            return "edit-profile";
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -94,9 +93,9 @@ public class ProfileController {
         try {
             userService.changeUsername(currentUsername, changeUsernameDto);
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("globalError", e.getMessage());
-            redirectAttributes.addFlashAttribute("changeUsernameDto", changeUsernameDto);
-            return "redirect:/profile/edit";
+            model.addAttribute("globalError", e.getMessage());
+            model.addAttribute("changePasswordDto", new ChangePasswordDto()); // Добавяме, за да избегнем грешки при рендиране
+            return "edit-profile";
         }
 
         redirectAttributes.addFlashAttribute("success", "Username changed successfully! Please login again.");
@@ -106,11 +105,10 @@ public class ProfileController {
 
     @PostMapping("/change-password")
     public String changePassword(@Valid @ModelAttribute("changePasswordDto") ChangePasswordDto changePasswordDto,
-                                 BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+                                 BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.changePasswordDto", bindingResult);
-            redirectAttributes.addFlashAttribute("changePasswordDto", changePasswordDto);
-            return "redirect:/profile/edit";
+            model.addAttribute("changeUsernameDto", new ChangeUsernameDto());
+            return "edit-profile";
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -119,9 +117,9 @@ public class ProfileController {
         try {
             userService.changePassword(currentUsername, changePasswordDto);
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("passwordError", e.getMessage());
-            redirectAttributes.addFlashAttribute("changePasswordDto", changePasswordDto);
-            return "redirect:/profile/edit";
+            model.addAttribute("passwordError", e.getMessage());
+            model.addAttribute("changeUsernameDto", new ChangeUsernameDto());
+            return "edit-profile";
         }
 
         redirectAttributes.addFlashAttribute("passwordSuccess", "Password changed successfully!");

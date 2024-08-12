@@ -9,14 +9,18 @@ import com.softuni.easypeasyrecipes_app.repository.CategoryRepository;
 import com.softuni.easypeasyrecipes_app.repository.RecipeRepository;
 import com.softuni.easypeasyrecipes_app.repository.UserRepository;
 import com.softuni.easypeasyrecipes_app.service.CategoryService;
+import com.softuni.easypeasyrecipes_app.service.RatingService;
 import com.softuni.easypeasyrecipes_app.service.RecipeService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -26,15 +30,17 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final CategoryService categoryService;
+    private final RatingService ratingService;
 
 
 
-    public RecipeServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper, RecipeRepository recipeRepository, UserRepository userRepository, CategoryService categoryService) {
+    public RecipeServiceImpl(CategoryRepository categoryRepository, ModelMapper modelMapper, RecipeRepository recipeRepository, UserRepository userRepository, CategoryService categoryService, RatingService ratingService) {
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
         this.categoryService = categoryService;
+        this.ratingService = ratingService;
     }
 
     @Override
@@ -86,7 +92,10 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeRepository.findByAddedBy_Id(userId);
     }
 
-
+    @Override
+    public long countRecipes() {
+        return recipeRepository.count();
+    }
     @Override
     public Recipe updateRecipe(Recipe recipe) {
         return recipeRepository.save(recipe);
@@ -137,6 +146,30 @@ public class RecipeServiceImpl implements RecipeService {
     public List<Recipe> findAllRecipes() {
         return recipeRepository.findAll();    }
 
+
+    @Override
+    public List<Recipe> getTopRecipesByRating(int topCount) {
+        List<Recipe> allRecipes = recipeRepository.findAll();
+
+        return allRecipes.stream()
+                .sorted((r1, r2) -> {
+                    double r1AvgRating = ratingService.calculateAverageRating(r1.getId());
+                    double r2AvgRating = ratingService.calculateAverageRating(r2.getId());
+                    return Double.compare(r2AvgRating, r1AvgRating);
+                })
+                .limit(topCount)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public Map<String, Long> getRecipesCountByCategory() {
+        List<Recipe> allRecipes = getAllRecipes();
+
+        return allRecipes.stream()
+                .collect(Collectors.groupingBy(
+                        recipe -> recipe.getCategory().getName().name(),
+                        Collectors.counting()
+                ));
+    }
 }
 
 

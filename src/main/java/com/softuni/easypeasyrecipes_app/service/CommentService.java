@@ -15,5 +15,7 @@ public interface CommentService {
     CommentDto getCommentById(Long id);
 
     Long getRecipeIdByCommentId(Long id);
+
+    long countComments();
 }
 

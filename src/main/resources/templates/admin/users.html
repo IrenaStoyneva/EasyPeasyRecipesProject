@@ -5,12 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Users</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css"/>
 </head>
 <body>
 <header th:replace="~{fragments/nav :: nav}"></header>
 <main class="container mt-5">
     <h1 class="text-center mb-4">Users</h1>
+    <div class="container mt-3">
+        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+    </div>
     <div class="table-container">
         <table class="table">
             <thead>
@@ -26,6 +36,7 @@
                 <td th:text="${user.username}"></td>
                 <td th:text="${user.email}"></td>
                 <td>
+
                     <form th:action="@{/admin/users/{id}/roles(id=${user.id})}" method="post">
                         <select name="roles" multiple class="form-control">
                             <option th:each="role : ${allRoles}"
@@ -39,9 +50,20 @@
                 </td>
                 <td>
                     <div class="btn-group" role="group">
+                        <!-- Бутон за премахване на роля -->
+                        <form th:action="@{/admin/users/remove-role/{id}(id=${user.id})}" method="post">
+                            <select name="roleToRemove" class="form-control">
+                                <option th:each="role : ${user.roles}"
+                                        th:value="${role.role}"
+                                        th:text="${role.role}">
+                                </option>
+                            </select>
+                            <button class="btn btn-warning mt-2" type="submit">Remove Role</button>
+                        </form>
+
                         <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post" style="display:inline;">
                             <input type="hidden" name="_method" value="delete">
-                            <button class="btn btn-danger" type="submit">Delete</button>
+                            <button class="btn btn-danger ml-2" type="submit">Delete User</button>
                         </form>
                     </div>
                 </td>
@@ -54,5 +76,7 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="/js/hideMessages.js"></script>
+
 </body>
 </html>

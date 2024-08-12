@@ -162,5 +162,20 @@ class CommentControllerITTest {
                 .andExpect(flash().attributeExists("errorMessage"))
                 .andExpect(redirectedUrl("/recipe/1"));
     }
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    void testAddCommentWithValidationErrors() throws Exception {
+        CommentDto commentDto = new CommentDto();
+        commentDto.setContent(""); // Празен коментар
+
+        mockMvc.perform(post("/recipe/1/comments")
+                        .flashAttr("commentDto", commentDto)
+                        .flashAttr("org.springframework.validation.BindingResult.commentDto", new org.springframework.validation.BeanPropertyBindingResult(commentDto, "commentDto")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("org.springframework.validation.BindingResult.commentDto"))
+                .andExpect(redirectedUrl("/recipe/1"));
+
+        Mockito.verify(commentService, Mockito.never()).addComment(eq(1L), any(CommentDto.class));
+    }
 
 }

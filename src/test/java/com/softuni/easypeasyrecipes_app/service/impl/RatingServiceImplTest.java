@@ -152,4 +152,45 @@ public class RatingServiceImplTest {
 
         assertEquals(5, votes);
     }
+    @Test
+    public void testAddRatingThrowsSecurityExceptionForUnauthenticatedUser() {
+        when(authentication.isAuthenticated()).thenReturn(false);
+
+        SecurityException exception = assertThrows(SecurityException.class, () -> {
+            ratingService.addRating(1L, ratingDto);
+        });
+
+        assertEquals("User is not authenticated", exception.getMessage());
+        verify(ratingRepository, never()).save(any(Rating.class));
+    }
+    @Test
+    public void testAddRatingThrowsExceptionForNonExistingUser() {
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            ratingService.addRating(1L, ratingDto);
+        });
+
+        assertEquals("User not found", exception.getMessage());
+        verify(ratingRepository, never()).save(any(Rating.class));
+    }
+    @Test
+    public void testAddRatingThrowsExceptionForNonExistingRecipe() {
+        when(recipeRepository.findById(1L)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            ratingService.addRating(1L, ratingDto);
+        });
+
+        assertEquals("Recipe not found", exception.getMessage());
+        verify(ratingRepository, never()).save(any(Rating.class));
+    }
+    @Test
+    public void testCalculateAverageRatingNoRatings() {
+        when(ratingRepository.findByRecipeId(1L)).thenReturn(List.of());
+
+        double averageRating = ratingService.calculateAverageRating(1L);
+
+        assertEquals(0.0, averageRating);
+    }
 }

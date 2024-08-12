@@ -3,99 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${recipe.name}">Recipe</title>
-    <!-- Bootstrap CSS -->
+    <title>Edit Recipe</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
 </head>
 <body>
 <header th:replace="~{fragments/nav :: nav}"></header>
 <main class="container mt-5">
-    <div class="row">
-        <div class="col-md-8">
-            <h1 th:text="${recipe.name}" class="mb-4">Recipe Title</h1>
-            <img th:src="@{${recipe.imageUrl}}" alt="Recipe Image" class="img-fluid mb-4"/>
-            <h2>Instructions</h2>
-            <p th:text="${recipe.instructions}">Recipe instructions go here.</p>
+    <h1></h1>
+    <form th:action="@{/profile/edit-recipe}" th:object="${editRecipeDto}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+        <div class="form-group">
+            <label for="name">Recipe Name</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}" required>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="card-title">Ingredients</h2>
-                    <ul>
-                        <li th:each="ingredient : ${ingredientsList}" th:text="${ingredient}">Ingredient</li>
-                    </ul>
-                    <h2 class="card-title">Description</h2>
-                    <p th:text="${recipe.description}">Recipe description goes here.</p>
-                </div>
-            </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" th:field="*{description}" required></textarea>
         </div>
-    </div>
-
-    <div class="row mt-5">
-        <div class="col-md-8">
-            <div class="rating-section d-flex align-items-center">
-                <form th:action="@{/recipe/{id}/rate(id=${recipe.id})}" th:object="${ratingDto}" method="post" id="rating-form">
-                    <div class="star-rating mr-3">
-                        <span data-value="5" class="star" th:classappend="${averageRating >= 5} ? 'selected' : ''">★</span>
-                        <span data-value="4" class="star" th:classappend="${averageRating >= 4} ? 'selected' : ''">★</span>
-                        <span data-value="3" class="star" th:classappend="${averageRating >= 3} ? 'selected' : ''">★</span>
-                        <span data-value="2" class="star" th:classappend="${averageRating >= 2} ? 'selected' : ''">★</span>
-                        <span data-value="1" class="star" th:classappend="${averageRating >= 1} ? 'selected' : ''">★</span>
-                    </div>
-                    <div class="rating-info">
-                        <p class="mb-0">
-                            <strong id="average-rating" th:text="${averageRating}">0.0</strong>
-                        </p>
-                    </div>
-                    <input type="hidden" name="value" id="rating-value" th:field="*{value}"/>
-                    <button type="submit" class="btn btn-primary rating-submit ml-3">Rate</button>
-                </form>
-            </div>
+        <div class="form-group">
+            <label for="categoryId">Category</label>
+            <select class="form-control" id="categoryId" name="categoryId" th:field="*{categoryId}" required>
+                <option value="" disabled th:selected="${editRecipeDto.categoryId == null}">Select Category</option>
+                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${editRecipeDto.categoryId != null and category.id == editRecipeDto.categoryId}"></option>
+            </select>
         </div>
-    </div>
-
-    <div class="row mt-5">
-        <div class="col-md-8">
-            <h2>Add a Comment</h2>
-            <form th:action="@{/recipe/{id}/comments(id=${recipe.id})}" th:object="${commentDto}" method="post">
-                <div class="form-group">
-                    <textarea class="form-control" th:field="*{content}" placeholder="Your comment" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Comment</button>
-            </form>
+        <div class="form-group">
+            <label for="ingredients">Ingredients</label>
+            <textarea class="form-control" id="ingredients" th:field="*{ingredients}" required></textarea>
         </div>
-    </div>
-
-    <div class="row mt-5">
-        <div class="col-md-8">
-            <h2>Comments</h2>
-            <div th:each="comment : ${comments}">
-                <p><strong th:text="${comment.author.username}">Username</strong>: <span th:text="${comment.content}">Comment content</span></p>
-                <p><small th:text="${comment.formattedDate}">Comment date</small></p>
-
-                <!-- Edit Button and Form -->
-                <div th:if="${comment.author.username == currentUsername or currentUserAdmin}">
-                    <!-- Button to toggle the edit form -->
-                    <button type="button" class="btn btn-warning btn-sm" onclick="toggleEditForm(${comment.id})">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-
-                    <!-- Edit form -->
-                    <form th:action="@{/api/comments/{id}(id=${comment.id})}" th:method="put" class="edit-comment-form" style="display: none;" th:id="'editForm-' + ${comment.id}">
-                        <div class="form-group mt-2">
-                            <textarea class="form-control" name="content" th:text="${comment.content}" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-sm">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                    </form>
-                </div>
-                <hr/>
-            </div>
+        <div class="form-group">
+            <label for="instructions">Instructions</label>
+            <textarea class="form-control" id="instructions" th:field="*{instructions}" required></textarea>
         </div>
-    </div>
+        <div class="form-group">
+            <label for="imageUrl">Image URL</label>
+            <input type="text" class="form-control" id="imageUrl" th:field="*{imageUrl}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
 </main>
 <footer class="footer mt-5 py-3 bg-light">
     <div class="container">
@@ -105,23 +53,5 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script>
-    // Function to toggle the visibility of the edit form
-    function toggleEditForm(commentId) {
-        // Find the form using its unique ID
-        const form = document.getElementById('editForm-' + commentId);
-
-        // Check if the form exists and toggle its display property
-        if (form) {
-            if (form.style.display === 'none' || form.style.display === '') {
-                form.style.display = 'block';
-            } else {
-                form.style.display = 'none';
-            }
-        } else {
-            console.error('Edit form not found for comment ID:', commentId);
-        }
-    }
-</script>
 </body>
 </html>

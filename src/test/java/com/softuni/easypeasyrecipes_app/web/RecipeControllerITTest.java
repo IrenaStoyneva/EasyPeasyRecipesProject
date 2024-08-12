@@ -105,4 +105,5 @@ public class RecipeControllerITTest {
                 .andExpect(model().attributeExists("recipes"))
                 .andExpect(model().attribute("showAll", true));
     }
+
 }

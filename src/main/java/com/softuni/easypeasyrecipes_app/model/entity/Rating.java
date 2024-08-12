@@ -2,6 +2,8 @@ package com.softuni.easypeasyrecipes_app.model.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "ratings")
 public class Rating {
@@ -51,5 +53,18 @@ public class Rating {
 
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Rating rating = (Rating) o;
+        return id == rating.id && value == rating.value && Objects.equals(user, rating.user) && Objects.equals(recipe, rating.recipe);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, value, user, recipe);
     }
 }

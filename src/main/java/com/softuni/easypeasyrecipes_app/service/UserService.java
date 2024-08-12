@@ -28,6 +28,7 @@ public interface UserService {
 
     long findUserIdByUsername(String username);
 
+    long countUsers();
 
     Optional<User> getCurrentUser();
 
@@ -36,4 +37,6 @@ public interface UserService {
     boolean changeUsername(String currentUsername, ChangeUsernameDto changeUsernameDto);
 
     boolean changePassword(String currentUsername, ChangePasswordDto changePasswordDto);
+
+    void removeUserRole(Long userId, RoleEnum role);
 }

@@ -46,17 +46,14 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public void addRating(Long recipeId, RatingDto ratingDto) {
-        // Извличане на текущо автентикирания потребител от Spring Security
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new SecurityException("User is not authenticated");
         }
 
-        // Извличане на името на потребителя (потребителско име или email)
         String username = authentication.getName();
 
-        // Намерете потребителя в базата данни по username
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (userOptional.isEmpty()) {
             throw new IllegalArgumentException("User not found");

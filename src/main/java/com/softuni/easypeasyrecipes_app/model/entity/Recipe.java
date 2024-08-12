@@ -157,6 +157,7 @@ public class Recipe {
     public void setApproved(boolean approved) {
         this.approved = approved;
     }
+
     public double getAverageRating() {
         return ratings.stream()
                 .mapToDouble(Rating::getValue)
@@ -165,4 +166,7 @@ public class Recipe {
     }
 
 
+    public int getTotalVotes() {
+        return ratings.size();
+    }
 }

@@ -60,16 +60,13 @@ public class CategoryServiceImplTest {
 
     @Test
     void findById_CategoryNotFound() {
-        // Подготовка на данните
+
         Long categoryId = 1L;
 
-        // Симулиране на поведението на репозитория
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
-        // Извикване на метода за тестване
         Optional<Category> foundCategory = categoryService.findById(categoryId);
 
-        // Проверки
         assertFalse(foundCategory.isPresent());
     }
     @Test

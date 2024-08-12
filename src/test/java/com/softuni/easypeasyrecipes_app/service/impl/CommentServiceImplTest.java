@@ -10,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
@@ -150,5 +152,25 @@ public class CommentServiceImplTest {
             commentService.getRecipeIdByCommentId(1L);
         });
         verify(commentRepository, times(1)).findById(1L);
+    }
+    @Test
+    public void testGetCommentByIdThrowsHttpClientErrorException() {
+        when(restClient.get()).thenReturn(headersUriSpec);
+        when(headersUriSpec.uri("/api/comments/{id}", 1L)).thenReturn(headersUriSpec);
+        when(headersUriSpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.body(CommentDto.class)).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+        assertThrows(HttpClientErrorException.class, () -> {
+            commentService.getCommentById(1L);
+        });
+    }
+    @Test
+    public void testCountComments() {
+        when(commentRepository.count()).thenReturn(5L);
+
+        long count = commentService.countComments();
+
+        assertEquals(5L, count);
+        verify(commentRepository, times(1)).count();
     }
 }

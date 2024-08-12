@@ -5,6 +5,7 @@ import com.softuni.easypeasyrecipes_app.model.entity.Recipe;
 import com.softuni.easypeasyrecipes_app.model.enums.CategoryEnum;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface RecipeService {
@@ -38,5 +39,11 @@ public interface RecipeService {
     void deleteOldRecipesWithoutRatings();
 
     List<Recipe> findAllRecipes();
+
+    long countRecipes();
+
+    List<Recipe> getTopRecipesByRating(int topCount);
+
+    public Map<String, Long> getRecipesCountByCategory();
 }
 

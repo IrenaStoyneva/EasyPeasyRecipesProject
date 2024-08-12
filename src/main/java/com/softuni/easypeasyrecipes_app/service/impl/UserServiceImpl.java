@@ -133,15 +133,24 @@ public class UserServiceImpl implements UserService {
 
         Set<UserRole> currentRoles = user.getRoles();
 
-        Set<UserRole> userRoles = roles.stream()
+        Set<UserRole> newRoles = roles.stream()
                 .map(roleEnum -> userRoleRepository.findByRole(roleEnum)
-                        .orElseThrow(() -> new IllegalArgumentException(STR."Role not found: \{roleEnum}")))
+                        .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleEnum)))
                 .collect(Collectors.toSet());
 
-        currentRoles.addAll(userRoles);
+        currentRoles.addAll(newRoles);
 
         user.setRoles(currentRoles);
+        userRepository.save(user);
+    }
+    public void removeUserRole(Long userId, RoleEnum role) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        UserRole roleToRemove = userRoleRepository.findByRole(role)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
+
+        user.getRoles().remove(roleToRemove);
         userRepository.save(user);
     }
 
@@ -166,6 +175,10 @@ public class UserServiceImpl implements UserService {
         return user.getRoles().stream()
                 .map(role -> STR."ROLE_\{role.getRole().name()}")
                 .collect(Collectors.toList());
+    }
+    @Override
+    public long countUsers() {
+        return userRepository.count();
     }
 
 }
