@@ -17,6 +17,7 @@ DB_PASSWORD=your_db_password
 ADMIN_USERNAME=your_admin_username
 ADMIN_PASSWORD=your_admin_password
 ADMIN_EMAIL=your_admin_email@example.com
+```
 
 JWT Authentication
 Overview
