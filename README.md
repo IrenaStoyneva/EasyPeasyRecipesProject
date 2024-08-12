@@ -19,7 +19,7 @@ ADMIN_PASSWORD=your_admin_password
 ADMIN_EMAIL=your_admin_email@example.com
 ```
 
-JWT Authentication
+## JWT Authentication
 Overview
 EasyPeasyRecipes uses JWT (JSON Web Token) for secure user authentication. After a successful login, a JWT is generated and used to access protected resources within the application.
 
