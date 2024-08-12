@@ -23,12 +23,3 @@ Before you begin, ensure you have met the following requirements:
 - MySQL database running
 - Maven installed
 
-## Installation
-
-To install and run the EasyPeasyRecipes application locally, follow these steps:
-
-1. Clone the repository:
-
-   ```sh
-   git clone https://github.com/IrenaStoyneva/easypeasyrecipes.git
-   cd easypeasyrecipes
