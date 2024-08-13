@@ -27,7 +27,7 @@ public class JwtServiceImpl implements JwtService {
     public String generateToken(String userId, Map<String, Object> claims) {
         var now = new Date();
 
-        return Jwts
+        String token = Jwts
                 .builder()
                 .setClaims(claims)
                 .setSubject(userId)
@@ -36,6 +36,9 @@ public class JwtServiceImpl implements JwtService {
                 .setExpiration(new Date(now.getTime() + jwtExpiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+
+        System.out.println("Generated JWT Token: " + token);
+        return token;
     }
     private Key getSigningKey(){
         byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);

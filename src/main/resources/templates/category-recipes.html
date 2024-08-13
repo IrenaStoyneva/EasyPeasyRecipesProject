@@ -12,7 +12,7 @@
 <body>
 <header th:replace="fragments/nav :: nav"></header>
 <main class="container mt-5">
-  <h1>All [[${category}]] Recipes</h1>
+  <h1 class="text-center">All [[${category}]] Recipes</h1>
   <div class="recent-recipes">
     <div class="row" th:if="${hasRecipes}">
       <div class="col-md-4" th:each="recipe : ${recipes}">
