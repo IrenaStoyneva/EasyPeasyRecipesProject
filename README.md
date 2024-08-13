@@ -40,4 +40,33 @@ Before you begin, ensure you have met the following requirements:
 - Java 21 or later installed
 - MySQL database running
 
+ # Comments Recipes API
+
+This project provides a RESTful API for managing comments on recipes.
+
+## API Endpoints
+
+### 1. Create a New Comment
+
+- **Endpoint:** `POST http://localhost:8081/api/comments/recipe/{recipeId}`
+- **Description:** Create a new comment for a specific recipe.
+- **Request Body:**
+  ```json
+  {
+      "content": "This is a test comment.",
+      "createdOn": "2024-08-13T12:00:00",
+      "authorId": 1,
+      "recipeId": 5
+  }
+## 2. Update comment
+- **Endpoint:** `PUT http://localhost:8081/api/comments/{commentId}`
+- - **Request Body:**
+```json
+{
+    "content": " Тest comment.",
+    "createdOn": "2024-08-13T12:00:00",
+    "authorId": 1,
+    "recipeId": 5
+}
+
 
