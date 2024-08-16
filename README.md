@@ -31,10 +31,11 @@ EasyPeasyRecipes uses JWT (JSON Web Token) for secure user authentication. After
 ## Technologies Used
 
 - Java 22
-- Spring Boot 
+- Spring Boot 2.0
 - Spring Security
-- Hibernate
+- Spring Data JPA
 - Thymeleaf
+- HTML, CSS, JavaScript
 - MySQL
 - RestClient
 
